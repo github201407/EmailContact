@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import com.example.administrator.emailcontact.BuildConfig;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
+import com.example.administrator.emailcontact.model.ContactService;
 
 /**
  * Created by Administrator on 2015/9/18.
@@ -18,20 +19,13 @@ public class ContactProvider extends ContentProvider {
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     private static final String[] DEFAULT_PROJECTION = new String[] {
-            ContactProviderColumns._ID,
-            ContactProviderColumns.NUMBER,
-            ContactProviderColumns.DISPLAY_NAME,
-            ContactProviderColumns.EMAIL,
-            ContactProviderColumns.TYPE,
+            ContactSQLiteHelper.ContactProviderColumns._ID,
+            ContactSQLiteHelper.ContactProviderColumns.NUMBER,
+            ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME,
+            ContactSQLiteHelper.ContactProviderColumns.EMAIL,
+            ContactSQLiteHelper.ContactProviderColumns.TYPE,
     };
 
-    public static class ContactProviderColumns {
-        public static final String _ID = "_id";
-        public static final String NUMBER = "_number";
-        public static final String DISPLAY_NAME = "_display_name";
-        public static final String EMAIL = "_email";
-        public static final String TYPE = "_type";
-    }
 
     protected static final int NUMBER_INDEX = 1;
     protected static final int DISPLAY_NAME_INDEX = 2;
@@ -48,8 +42,8 @@ public class ContactProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         String[] columnNames = (projection == null) ? DEFAULT_PROJECTION : projection;
-        ContactSQLiteHelper mSQLiteHelper = ContactSQLiteHelper.getInstance(getContext());
-        Cursor mCursor = mSQLiteHelper.query(columnNames, selection, selectionArgs, null, null, sortOrder);
+        ContactService mService = new ContactService(getContext());
+        Cursor mCursor = mService.query(columnNames, null, null, null, null, null);
         return mCursor;
     }
 

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">EmailContact</string>
     <string name="action_settings">Settings</string>
+
+    <string name="number">号码</string>
+    <string name="email">邮箱</string>
+    <string name="type">类型</string>
+    <string name="displayName">名字</string>
 </resources>
