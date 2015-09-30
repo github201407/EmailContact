@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.QuickContactBadge;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.Activity.ContactList;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mDelete;
     private Button mUpdate;
     private Button mDownload;
+    private QuickContactBadge mQuickContactBadge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDelete.setOnClickListener(this);
         mUpdate.setOnClickListener(this);
         mDownload.setOnClickListener(this);
+        mQuickContactBadge = (QuickContactBadge) findViewById(R.id.contactBadge);
+        //mQuickContactBadge.assignContactFromEmail("12345@qq.com", true);
+        mQuickContactBadge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "hello", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
