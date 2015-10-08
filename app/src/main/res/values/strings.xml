@@ -12,4 +12,5 @@
     <string name="cancelAll">反选</string>
     <string name="quit">退出</string>
     <string name="ok">确定</string>
+    <string name="expand_title">ExpandableListView</string>
 </resources>

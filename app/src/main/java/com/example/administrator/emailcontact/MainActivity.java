@@ -201,10 +201,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for(Contact contact : mList)
             mService.insert(contact);
 
-//        GroupService mGroupService = new GroupService(this);
-//        mGroupService.insert("dev 1");
-//        mGroupService.insert("dev 2");
-//        mGroupService.insert("dev 2");
+        GroupService mGroupService = new GroupService(this);
+        mGroupService.insert("dev 1");
+        mGroupService.insert("dev 2");
+        mGroupService.insert("dev 2");
 
     }
 
