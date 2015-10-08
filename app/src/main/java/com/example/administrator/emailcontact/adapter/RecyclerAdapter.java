@@ -92,22 +92,18 @@ public class RecyclerAdapter extends CursorAdapter {
         notifyDataSetChanged();
     }
 
+    /**
+     * 标记被选中的位置为true，遍历取出mList对应true的位置的值。
+     * @return
+     */
     public String getEmailStr() {
         StringBuffer mBuffer = new StringBuffer();
         for(int i = 0,n= mMap.size(); i < n; i++) {
             if(mMap.valueAt(i)){
-                mBuffer.append(mList.get(i) + ";");
+                mBuffer.append(mList.get(i) + ",");
             }
         }
         return mBuffer.toString();
     }
 
-    public void refresh(){
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        notifyDataSetChanged();
-    }
 }
