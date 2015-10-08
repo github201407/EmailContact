@@ -1,4 +1,4 @@
-package com.example.administrator.emailcontact.Activity;
+package com.example.administrator.emailcontact.activity;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -156,7 +156,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
             Toast.makeText(ContactList.this, str, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.putExtra("email",str);
-            setResult(RESULT_OK, intent);
+            setResult(10, intent);
         }
         finish();
     }
