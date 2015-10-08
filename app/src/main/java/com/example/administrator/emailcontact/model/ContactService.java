@@ -85,7 +85,7 @@ public class ContactService {
             String diaplayName = cursor.getString(0);
             String number = cursor.getString(1);
             String email = cursor.getString(2);
-            String type = cursor.getString(3);
+            int type = cursor.getInt(3);
             return new Contact(number, diaplayName, email, type);
         }
         return null;

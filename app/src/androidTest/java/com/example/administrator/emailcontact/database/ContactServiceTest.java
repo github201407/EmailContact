@@ -17,7 +17,7 @@ public class ContactServiceTest extends AndroidTestCase {
 
     public void testinsert() {
         ContactService mService = new ContactService(getContext());
-        Contact mContact = new Contact("123", "cmq", "123@qq.com",ContactSQLiteHelper.Type.TYPE_HOME);
+        Contact mContact = new Contact("123", "cmq", "123@qq.com",1);
         long rowid = mService.insert(mContact);
         assertEquals(-1l, rowid);
     }

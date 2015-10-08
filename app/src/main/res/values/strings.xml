@@ -6,4 +6,10 @@
     <string name="email">邮箱</string>
     <string name="type">类型</string>
     <string name="displayName">名字</string>
+
+    <string name="title">联系人列表</string>
+    <string name="all">全选</string>
+    <string name="cancelAll">反选</string>
+    <string name="quit">退出</string>
+    <string name="ok">确定</string>
 </resources>

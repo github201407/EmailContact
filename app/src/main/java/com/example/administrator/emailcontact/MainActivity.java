@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.activity.ContactList;
+import com.example.administrator.emailcontact.activity.ExpandList;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
+import com.example.administrator.emailcontact.model.GroupService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText mNumber;
     private EditText mType;
     private Button mShow;
+    private Button mExpand;
     private Button mAdd;
     private Button mSearch;
     private Button mDelete;
@@ -62,12 +65,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNumber = (EditText) findViewById(R.id.number);
         mType = (EditText) findViewById(R.id.type);
         mShow = (Button) findViewById(R.id.show);
+        mExpand = (Button) findViewById(R.id.expand);
         mAdd = (Button) findViewById(R.id.add);
         mSearch = (Button) findViewById(R.id.search);
         mDelete = (Button) findViewById(R.id.delete);
         mUpdate = (Button) findViewById(R.id.update);
         mDownload = (Button) findViewById(R.id.download);
         mShow.setOnClickListener(this);
+        mExpand.setOnClickListener(this);
         mAdd.setOnClickListener(this);
         mSearch.setOnClickListener(this);
         mDelete.setOnClickListener(this);
@@ -103,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.show:
                 doShow();
                 break;
+            case R.id.expand:
+                doExpand();
+                break;
             case R.id.add:
                 doAdd();
                 break;
@@ -121,6 +129,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private void doExpand() {
+        startActivity(new Intent(this, ExpandList.class));
     }
 
     private void doDownload() {
@@ -155,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 publishProgress(rate);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -174,11 +186,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     private void doBackWork() {
-        Contact c1 = new Contact("no.11", "name11", "mail11@qq.com", "type_home");
-        Contact c2 = new Contact("no.22", "name22", "mail22@qq.com", "type_work");
-        Contact c3 = new Contact("no.23", "name23", "mail23@qq.com", "type_work");
-        Contact c4 = new Contact("no.24", "name24", "mail24@qq.com", "type_home");
-        Contact c5 = new Contact("no.25", "name25", "mail25@qq.com", "type_work");
+        Contact c1 = new Contact("123", "张三", "mail11@qq.com", 1);
+        Contact c2 = new Contact("123", "李四", "mail22@qq.com", 2);
+        Contact c3 = new Contact("123", "王五", "mail23@qq.com", 1);
+        Contact c4 = new Contact("123", "老六", "mail24@qq.com", 3);
+        Contact c5 = new Contact("123", "小七", "mail25@qq.com", 2);
         ContactService mService = new ContactService(MainActivity.this);
         List<Contact> mList = new ArrayList<Contact>();
         mList.add(c1);
@@ -188,6 +200,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mList.add(c5);
         for(Contact contact : mList)
             mService.insert(contact);
+
+//        GroupService mGroupService = new GroupService(this);
+//        mGroupService.insert("dev 1");
+//        mGroupService.insert("dev 2");
+//        mGroupService.insert("dev 2");
+
     }
 
     private void doUpdate() {
@@ -232,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String number = mNumber.getText().toString();
         String type = mType.getText().toString();
         ContactService mService = new ContactService(MainActivity.this);
-        long id = mService.insert(new Contact(number, displayName, email, type));
+        long id = mService.insert(new Contact(number, displayName, email, Integer.parseInt(type)));
         mId.setText("" + id);
     }
 
