@@ -43,7 +43,7 @@ public class ExpandList extends ExpandableListActivity {
 //        setListAdapter(mAdapter);
 
         GroupService mGroup = new GroupService(this);
-        Cursor mCursor = mGroup.defaultQuery();
+        Cursor mCursor = mGroup.queryParent(-1);
         MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this);
         setListAdapter(mAdapter);
     }

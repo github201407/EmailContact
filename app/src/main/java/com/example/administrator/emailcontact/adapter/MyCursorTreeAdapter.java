@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CursorTreeAdapter;
 import android.widget.TextView;
 
+import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -32,22 +33,13 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     @Override
     protected Cursor getChildrenCursor(Cursor cursor) {
         int contact_type_id = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
-        int group_parent = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns.PARENT));
-        if (group_parent == -1) {
-            ContactService mContact = new ContactService(mCtx);
-            return mContact.findByTypeId(contact_type_id);
-        } else {
-            setGroupCursor(cursor);
-            return cursor;
-//            GroupService mGroup = new GroupService(mCtx);
-//            return mGroup.queryParent(group_parent);
-        }
+        ContactService mContact = new ContactService(mCtx);
+        return mContact.findByTypeId(contact_type_id);
     }
 
     @Override
     protected View newGroupView(Context context, Cursor cursor, boolean b, ViewGroup viewGroup) {
         View view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
-        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(GroupSQLiteHelper.GroupColumns._NAME)));
         return view;
     }
 
@@ -58,8 +50,14 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     @Override
     protected View newChildView(Context context, Cursor cursor, boolean b, ViewGroup viewGroup) {
-        TextView view = (TextView) mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
-        view.setText(cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL)));
+        View view;
+        int contact_type_id = cursor.getInt(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID));
+        GroupService mGroup = new GroupService(mCtx);
+        Cursor mCursor = mGroup.queryParent(contact_type_id);
+        if(mCursor.moveToNext())
+          view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
+        else
+          view = mInflater.inflate(R.layout.expand_list_item, viewGroup, false);
         return view;
     }
 
