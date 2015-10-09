@@ -19,13 +19,19 @@ public class GroupService {
         dbOpenHelper = new GroupSQLiteHelper(context);
     }
 
-    public long insert(String groupName) {
+    public long insert(int parent, int type, String groupName){
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        cv.put(GroupSQLiteHelper.GroupColumns.PARENT, parent);
+        cv.put(GroupSQLiteHelper.GroupColumns.TYPE, type);
         cv.put(GroupSQLiteHelper.GroupColumns._NAME, groupName);
         long row = db.insert(GroupSQLiteHelper.TABLE_NAME, null, cv);
         Log.e("sql", "insert:" + row);
         return row;
+    }
+
+    public long insert(String groupName) {
+        return insert(-1, 0, groupName);
     }
 
     public void delete(int id) {
@@ -54,9 +60,34 @@ public class GroupService {
     }
 
     public Cursor defaultQuery() {
-        return this.query(new String[]{GroupSQLiteHelper.GroupColumns._ID,
+        String[] columns = {
+                GroupSQLiteHelper.GroupColumns._ID,
+                GroupSQLiteHelper.GroupColumns.PARENT,
+                GroupSQLiteHelper.GroupColumns.ROOT,
+                GroupSQLiteHelper.GroupColumns.TYPE,
                 GroupSQLiteHelper.GroupColumns._NAME,
-                GroupSQLiteHelper.GroupColumns._CREATE_DATE}, null, null, null, null, null);
+                GroupSQLiteHelper.GroupColumns._CREATE_DATE};
+        return this.query(columns, null, null, null, null, null);
+    }
+
+    public Cursor queryParent(int parent) {
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        String[] columns = {
+                GroupSQLiteHelper.GroupColumns._ID,
+                GroupSQLiteHelper.GroupColumns.ROOT,
+                GroupSQLiteHelper.GroupColumns.TYPE,
+                GroupSQLiteHelper.GroupColumns._NAME,
+                GroupSQLiteHelper.GroupColumns._CREATE_DATE};
+        String selection = GroupSQLiteHelper.GroupColumns.PARENT + " = ?";
+        String[] selectionArgs = {String.valueOf(parent)};
+        Cursor cursor = db.query(GroupSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+        if (cursor == null)
+            return null;
+        if (!cursor.moveToNext()) {
+            cursor.close();
+            return null;
+        }
+        return cursor;
     }
 
 }

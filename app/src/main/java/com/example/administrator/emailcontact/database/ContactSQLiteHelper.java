@@ -17,7 +17,7 @@ public class ContactSQLiteHelper extends SQLiteOpenHelper {
         public static final String NUMBER = "_number";
         public static final String DISPLAY_NAME = "_display_name";
         public static final String EMAIL = "_email";
-        public static final String TYPE = "_type";
+        public static final String TYPE_ID = "_type_id";
     }
 
     public ContactSQLiteHelper(Context context) {
@@ -31,7 +31,7 @@ public class ContactSQLiteHelper extends SQLiteOpenHelper {
                 + ContactProviderColumns.DISPLAY_NAME + " TEXT, "
                 + ContactProviderColumns.NUMBER + " TEXT, "
                 + ContactProviderColumns.EMAIL + " TEXT, "
-                + ContactProviderColumns.TYPE +" INTEGER);";
+                + ContactProviderColumns.TYPE_ID +" INTEGER);";
         sqLiteDatabase.execSQL(sql);
     }
 

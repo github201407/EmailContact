@@ -9,12 +9,15 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class GroupSQLiteHelper extends SQLiteOpenHelper {
 
-    private final static String DATABASE_NAME = "ContactProvider.db";
+    private final static String DATABASE_NAME = "GroupProvider.db";
     private final static int DATABASE_VERSION = 1;
     public final static String TABLE_NAME = "group_table";
 
     public static class GroupColumns {
         public static final String _ID = "_id";
+        public static final String PARENT = "parent";
+        public static final String ROOT = "root";
+        public static final String TYPE = "type";
         public static final String _NAME = "_display_name";
         public static final String _CREATE_DATE = "_create_date";
     }
@@ -26,6 +29,9 @@ public class GroupSQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String sql = "CREATE TABLE " + TABLE_NAME + " ("
                 + GroupColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + GroupColumns.PARENT + " INTEGER NOT NULL, "
+                + GroupColumns.ROOT + " INTEGER, "
+                + GroupColumns.TYPE + " INTEGER NOT NULL, "
                 + GroupColumns._NAME + " TEXT, "
                 + GroupColumns._CREATE_DATE +" INTEGER);";
         sqLiteDatabase.execSQL(sql);

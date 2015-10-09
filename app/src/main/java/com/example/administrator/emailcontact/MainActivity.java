@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Contact c2 = new Contact("123", "李四", "mail22@qq.com", 2);
         Contact c3 = new Contact("123", "王五", "mail23@qq.com", 1);
         Contact c4 = new Contact("123", "老六", "mail24@qq.com", 3);
-        Contact c5 = new Contact("123", "小七", "mail25@qq.com", 2);
+        Contact c5 = new Contact("123", "小七", "mail25@qq.com", 5);
         ContactService mService = new ContactService(MainActivity.this);
         List<Contact> mList = new ArrayList<Contact>();
         mList.add(c1);
@@ -203,9 +203,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mService.insert(contact);
 
         GroupService mGroupService = new GroupService(this);
-        mGroupService.insert("dev 1");
-        mGroupService.insert("dev 2");
-        mGroupService.insert("dev 2");
+        mGroupService.insert(-1, 1, "dev 1");
+        mGroupService.insert(-1, 1, "dev 2");
+        mGroupService.insert(-1, 1, "dev 3");
+        mGroupService.insert(-1, 1, "dev 4");
+        mGroupService.insert(1, 0, "dev 5");
 
     }
 

@@ -3,7 +3,6 @@ package com.example.administrator.emailcontact.model;
 import android.content.ContentValues;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
-import com.example.administrator.emailcontact.provider.ContactProvider;
 
 /**
  * Created by Administrator on 2015/9/18.
@@ -58,7 +57,7 @@ public class Contact {
         mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.NUMBER, number);
         mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.EMAIL, email);
         mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME, display_name);
-        mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.TYPE, type);
+        mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID, type);
         return mContentValues;
     }
 
@@ -66,7 +65,7 @@ public class Contact {
         return new Contact(contentValues.getAsString(ContactSQLiteHelper.ContactProviderColumns.NUMBER),
                 contentValues.getAsString(ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME),
                 contentValues.getAsString(ContactSQLiteHelper.ContactProviderColumns.EMAIL),
-                contentValues.getAsInteger(ContactSQLiteHelper.ContactProviderColumns.TYPE)
+                contentValues.getAsInteger(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID)
                 );
     }
 }

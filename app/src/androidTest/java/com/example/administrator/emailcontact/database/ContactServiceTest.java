@@ -35,7 +35,7 @@ public class ContactServiceTest extends AndroidTestCase {
                 ContactSQLiteHelper.ContactProviderColumns.NUMBER,
                 ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME,
                 ContactSQLiteHelper.ContactProviderColumns.EMAIL,
-                ContactSQLiteHelper.ContactProviderColumns.TYPE,
+                ContactSQLiteHelper.ContactProviderColumns.TYPE_ID,
         };
         ContactService mService = new ContactService(getContext());
         Cursor mCursor = mService.query(columns, null, null, null, null, null);
