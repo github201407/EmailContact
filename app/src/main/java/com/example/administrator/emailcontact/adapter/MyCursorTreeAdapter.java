@@ -24,6 +24,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     private Context mCtx;
     private LayoutInflater mInflater;
+    private boolean isFirst = true;
 
     public MyCursorTreeAdapter(Cursor cursor, Context context) {
         super(cursor, context);
@@ -33,11 +34,9 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     @Override
     protected Cursor getChildrenCursor(Cursor cursor) {
-        int contact_type_id = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
-//        ContactService mContact = new ContactService(mCtx);
-//        return mContact.findByTypeId(contact_type_id);
+        int child_parent = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
         GroupService mGroupService = new GroupService(mCtx);
-        Cursor mCursor = mGroupService.queryParent(contact_type_id);
+        Cursor mCursor = mGroupService.queryParent(child_parent);
         return mCursor;
     }
 
@@ -54,46 +53,37 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     @Override
     protected View newChildView(Context context, Cursor cursor, boolean b, ViewGroup viewGroup) {
-        View view;
-//        int contact_type_id = cursor.getInt(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID));
-//        GroupService mGroup = new GroupService(mCtx);
-//        Cursor mCursor = mGroup.queryParent(contact_type_id);
-//        if(mCursor.moveToNext())
-//          view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
-//        else
-        view = mInflater.inflate(R.layout.expand_list_item, viewGroup, false);
+        CustExpListview view = new CustExpListview(mCtx);
+        view.setPadding(20,0,0,0);
         return view;
     }
 
     @Override
     protected void bindChildView(View view, Context context, Cursor cursor, boolean b) {
-        //((TextView) view).setText(cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL)));
-        MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, mCtx);
-//        final int size = cursor.getCount() + myCursorTreeAdapter2.getChildrenCursor(cursor).getCount();
-//        View view1 = myCursorTreeAdapter2.getGroupView(0, false, null, null);
-//        view1.measure(0, 0);
-//        final int height = view1.getMeasuredHeight() + view1.getTop() + view1.getBottom();
-        final ExpandableListView mListView = (ExpandableListView) view;//.findViewById(R.id.expandListView);
-        mListView.setAdapter(myCursorTreeAdapter2);
+        if (isFirst) {
+            isFirst = false;
+            MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, mCtx);
+            view.setPadding(20,0,0,0);
+            final CustExpListview mListView = (CustExpListview) view;//.findViewById(R.id.expandListView);
+            mListView.setAdapter(myCursorTreeAdapter2);
+        }
+        if (b)
+            isFirst = true;
+    }
 
-        mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                ViewGroup.LayoutParams params = mListView.getLayoutParams();
-                params.height = 400;
-                mListView.setLayoutParams(params);
-            }
-        });
+    public class CustExpListview extends ExpandableListView {
 
-        mListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                ViewGroup.LayoutParams params = mListView.getLayoutParams();
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                mListView.setLayoutParams(params);
-            }
-        });
+        public CustExpListview(Context context) {
+            super(context);
+        }
 
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(960,
+                    MeasureSpec.AT_MOST);
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(600,
+                    MeasureSpec.AT_MOST);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
     }
 
 }
