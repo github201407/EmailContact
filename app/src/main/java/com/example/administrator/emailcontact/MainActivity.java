@@ -208,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGroupService.insert(-1, 1, "dev 3");
         mGroupService.insert(-1, 1, "dev 4");
         mGroupService.insert( 1, 0, "dev 5");
+        mGroupService.insert( 2, 0, "dev 6");
+        mGroupService.insert( 2, 0, "dev 7");
+        mGroupService.insert( 2, 0, "dev 8");
 
     }
 

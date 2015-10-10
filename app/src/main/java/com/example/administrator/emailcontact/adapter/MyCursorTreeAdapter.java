@@ -5,9 +5,13 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.CursorTreeAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -30,8 +34,11 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     @Override
     protected Cursor getChildrenCursor(Cursor cursor) {
         int contact_type_id = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
-        ContactService mContact = new ContactService(mCtx);
-        return mContact.findByTypeId(contact_type_id);
+//        ContactService mContact = new ContactService(mCtx);
+//        return mContact.findByTypeId(contact_type_id);
+        GroupService mGroupService = new GroupService(mCtx);
+        Cursor mCursor = mGroupService.queryParent(contact_type_id);
+        return mCursor;
     }
 
     @Override
@@ -52,14 +59,41 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 //        GroupService mGroup = new GroupService(mCtx);
 //        Cursor mCursor = mGroup.queryParent(contact_type_id);
 //        if(mCursor.moveToNext())
-          view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
+//          view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
 //        else
-//          view = mInflater.inflate(R.layout.expand_list_item, viewGroup, false);
+        view = mInflater.inflate(R.layout.expand_list_item, viewGroup, false);
         return view;
     }
 
     @Override
     protected void bindChildView(View view, Context context, Cursor cursor, boolean b) {
-        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL)));
+        //((TextView) view).setText(cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL)));
+        MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, mCtx);
+        final int size = cursor.getCount() + myCursorTreeAdapter2.getChildrenCursor(cursor).getCount();
+        View view1 = myCursorTreeAdapter2.getGroupView(0, false, null, null);
+        view1.measure(0, 0);
+        final int height = view1.getMeasuredHeight();
+        final ExpandableListView mListView = (ExpandableListView) view;//.findViewById(R.id.expandListView);
+        mListView.setAdapter(myCursorTreeAdapter2);
+
+        mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                ViewGroup.LayoutParams params = mListView.getLayoutParams();
+                params.height = size * (height + mListView.getDividerHeight());
+                mListView.setLayoutParams(params);
+            }
+        });
+
+        mListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                ViewGroup.LayoutParams params = mListView.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                mListView.setLayoutParams(params);
+            }
+        });
+
     }
+
 }
