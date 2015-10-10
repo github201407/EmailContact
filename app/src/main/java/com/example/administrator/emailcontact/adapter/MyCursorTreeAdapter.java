@@ -69,10 +69,10 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     protected void bindChildView(View view, Context context, Cursor cursor, boolean b) {
         //((TextView) view).setText(cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL)));
         MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, mCtx);
-        final int size = cursor.getCount() + myCursorTreeAdapter2.getChildrenCursor(cursor).getCount();
-        View view1 = myCursorTreeAdapter2.getGroupView(0, false, null, null);
-        view1.measure(0, 0);
-        final int height = view1.getMeasuredHeight();
+//        final int size = cursor.getCount() + myCursorTreeAdapter2.getChildrenCursor(cursor).getCount();
+//        View view1 = myCursorTreeAdapter2.getGroupView(0, false, null, null);
+//        view1.measure(0, 0);
+//        final int height = view1.getMeasuredHeight() + view1.getTop() + view1.getBottom();
         final ExpandableListView mListView = (ExpandableListView) view;//.findViewById(R.id.expandListView);
         mListView.setAdapter(myCursorTreeAdapter2);
 
@@ -80,7 +80,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
             @Override
             public void onGroupExpand(int groupPosition) {
                 ViewGroup.LayoutParams params = mListView.getLayoutParams();
-                params.height = size * (height + mListView.getDividerHeight());
+                params.height = 400;
                 mListView.setLayoutParams(params);
             }
         });
