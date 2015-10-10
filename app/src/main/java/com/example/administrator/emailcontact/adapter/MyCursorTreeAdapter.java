@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.CursorTreeAdapter;
 import android.widget.TextView;
 
-import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.GroupService;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by Administrator on 2015/10/9.
@@ -51,13 +48,13 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     @Override
     protected View newChildView(Context context, Cursor cursor, boolean b, ViewGroup viewGroup) {
         View view;
-        int contact_type_id = cursor.getInt(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID));
-        GroupService mGroup = new GroupService(mCtx);
-        Cursor mCursor = mGroup.queryParent(contact_type_id);
-        if(mCursor.moveToNext())
+//        int contact_type_id = cursor.getInt(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID));
+//        GroupService mGroup = new GroupService(mCtx);
+//        Cursor mCursor = mGroup.queryParent(contact_type_id);
+//        if(mCursor.moveToNext())
           view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
-        else
-          view = mInflater.inflate(R.layout.expand_list_item, viewGroup, false);
+//        else
+//          view = mInflater.inflate(R.layout.expand_list_item, viewGroup, false);
         return view;
     }
 

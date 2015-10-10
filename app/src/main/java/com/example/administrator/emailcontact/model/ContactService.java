@@ -15,13 +15,15 @@ public class ContactService {
     private ContactSQLiteHelper dbOpenHelper = null;
 
     public ContactService(Context context) {
-        dbOpenHelper = new ContactSQLiteHelper(context);
+        if(dbOpenHelper == null)
+            dbOpenHelper = new ContactSQLiteHelper(context);
     }
 
     public long insert(Contact contact) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ContentValues cv = contact.getContentValues();
         long row = db.insert(ContactSQLiteHelper.TABLE_NAME, null, cv);
+        db.close();
         Log.e("sql", "insert:" + row);
         return row;
     }
@@ -31,6 +33,7 @@ public class ContactService {
         String whereClause = ContactSQLiteHelper.ContactProviderColumns._ID + " = ?";
         String[] whereArgs = {Integer.toString(id)};
         int rows = db.delete(ContactSQLiteHelper.TABLE_NAME, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "delete:" + rows);
     }
 
@@ -41,6 +44,7 @@ public class ContactService {
         ContentValues cv = new ContentValues();
         cv.put(ContactSQLiteHelper.ContactProviderColumns.EMAIL, email);
         int result = db.update(ContactSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "update:" + result);
         return result;
     }
@@ -51,6 +55,7 @@ public class ContactService {
         String[] whereArgs = {Integer.toString(id)};
         ContentValues cv = contact.getContentValues();
         int result = db.update(ContactSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "updateContact:" + result);
         return result;
     }

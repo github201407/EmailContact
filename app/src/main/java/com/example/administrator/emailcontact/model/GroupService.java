@@ -16,7 +16,8 @@ public class GroupService {
     private GroupSQLiteHelper dbOpenHelper = null;
 
     public GroupService(Context context) {
-        dbOpenHelper = new GroupSQLiteHelper(context);
+        if(dbOpenHelper == null)
+            dbOpenHelper = new GroupSQLiteHelper(context);
     }
 
     public long insert(int parent, int type, String groupName){
@@ -26,6 +27,7 @@ public class GroupService {
         cv.put(GroupSQLiteHelper.GroupColumns.TYPE, type);
         cv.put(GroupSQLiteHelper.GroupColumns._NAME, groupName);
         long row = db.insert(GroupSQLiteHelper.TABLE_NAME, null, cv);
+        db.close();
         Log.e("sql", "insert:" + row);
         return row;
     }
@@ -39,6 +41,7 @@ public class GroupService {
         String whereClause = GroupSQLiteHelper.GroupColumns._ID + " = ?";
         String[] whereArgs = {Integer.toString(id)};
         int rows = db.delete(GroupSQLiteHelper.TABLE_NAME, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "delete:" + rows);
     }
 
@@ -49,6 +52,7 @@ public class GroupService {
         ContentValues cv = new ContentValues();
         cv.put(GroupSQLiteHelper.GroupColumns._NAME, groupName);
         int result = db.update(GroupSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "update:" + result);
         return result;
     }
