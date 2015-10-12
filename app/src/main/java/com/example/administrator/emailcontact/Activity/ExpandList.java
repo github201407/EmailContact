@@ -41,6 +41,7 @@ public class ExpandList extends ExpandableListActivity {
 //                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, //显示电话号码
 //                new int[]{android.R.id.text1});
 //        setListAdapter(mAdapter);
+        
 
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
