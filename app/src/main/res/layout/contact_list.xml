@@ -47,15 +47,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/all"
+            android:id="@+id/modify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/all"/>
         <Button
-            android:id="@+id/cancelAll"
+            android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/all"
+            android:layout_toRightOf="@+id/modify"
             android:text="@string/cancelAll"/>
         <Button
             android:id="@+id/cancel"

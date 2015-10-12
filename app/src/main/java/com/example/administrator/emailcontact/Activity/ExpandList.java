@@ -1,225 +1,121 @@
 package com.example.administrator.emailcontact.activity;
 
 import android.app.ExpandableListActivity;
-import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.GroupService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Administrator on 2015/10/8.
  */
-public class ExpandList extends ExpandableListActivity {
+public class ExpandList extends ExpandableListActivity implements View.OnClickListener {
+
+    private List<String> mEmails = new ArrayList<String>();
+    private Button mOK;
+    private Button mAll;
+    private Button mCancelAll;
+    private Button mCancel;
+    public static int checkedId = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expand_list);
-        /* 查询联系人并获取其Cursor对象*/
-//        Uri mUri=ContactsContract.Contacts.CONTENT_URI;//ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
-//        Cursor cursor=getContentResolver().query(mUri,null,null,null,null);
-//        /* 保存取联系人ID的列位置*/
-//        int mGroupIdColumnIndex = cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID);
-//        /*设置 adapter*/
-//        ExpandListAdapter mAdapter = new ExpandListAdapter(
-//                mGroupIdColumnIndex,
-//                this,
-//                cursor,
-//                android.R.layout.simple_expandable_list_item_1,//组视图(联系人)
-//                new String[]{ContactsContract.Contacts.DISPLAY_NAME}, //显示联系人名字
-//                new int[]{android.R.id.text1},
-//                android.R.layout.simple_expandable_list_item_1,//子视图(电话号码)
-//                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, //显示电话号码
-//                new int[]{android.R.id.text1});
-//        setListAdapter(mAdapter);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.expandToolbar);
+        toolbar.setTitle(getClass().getSimpleName());
+        toolbar.inflateMenu(R.menu.menu_expand_list);
 
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
-        MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this);
+        MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
         setListAdapter(mAdapter);
-
-//        final ExpandableListView mListView = getExpandableListView();
-//        mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-//            @Override
-//            public void onGroupExpand(int groupPosition) {
-//                ViewGroup.LayoutParams params = mListView.getLayoutParams();
-//                params.height = 600;
-//                mListView.setLayoutParams(params);
-//            }
-//        });
-//
-//        mListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-//            @Override
-//            public void onGroupCollapse(int groupPosition) {
-//                ViewGroup.LayoutParams params = mListView.getLayoutParams();
-//                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//                mListView.setLayoutParams(params);
-//            }
-//        });
-
-//        setListAdapter(new ParentLevel());
+        initActivity();
 
     }
 
-    public class ParentLevel extends BaseExpandableListAdapter {
+    private void initActivity() {
+        mOK = (Button) findViewById(R.id.ok);
+        mAll = (Button) findViewById(R.id.modify);
+        mCancelAll = (Button) findViewById(R.id.delete);
+        mAll.setOnClickListener(this);
+        mOK.setOnClickListener(this);
+        mCancelAll.setOnClickListener(this);
+    }
 
-        @Override
-        public Object getChild(int arg0, int arg1) {
-            return arg1;
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        @Override
-        public View getChildView(int groupPosition, int childPosition,
-                                 boolean isLastChild, View convertView, ViewGroup parent) {
-            CustExpListview SecondLevelexplv = new CustExpListview(ExpandList.this);
-            SecondLevelexplv.setAdapter(new SecondLevelAdapter());
-            SecondLevelexplv.setGroupIndicator(null);
-            return SecondLevelexplv;
-        }
-
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            return 3;
-        }
-
-        @Override
-        public Object getGroup(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public int getGroupCount() {
-            return 5;
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean isExpanded,
-                                 View convertView, ViewGroup parent) {
-            TextView tv = new TextView(ExpandList.this);
-            tv.setText("->FirstLevel");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(20);
-            tv.setBackgroundColor(Color.BLUE);
-            tv.setPadding(10, 7, 7, 7);
-
-            return tv;
-        }
-
-        @Override
-        public boolean hasStableIds() {
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
             return true;
         }
 
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return true;
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ok:
+                doOK();
+                break;
+            case R.id.modify:
+                doModify();
+                break;
+            case R.id.delete:
+               doDelete();
+                break;
+            case R.id.cancel:
+                finish();
+                break;
+            default:
+                break;
         }
     }
 
-    public class CustExpListview extends ExpandableListView {
-
-        public CustExpListview(Context context) {
-            super(context);
-        }
-
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            widthMeasureSpec = MeasureSpec.makeMeasureSpec(960,
-                    MeasureSpec.AT_MOST);
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(600,
-                    MeasureSpec.AT_MOST);
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
+    private void doDelete() {
+        if(checkedId != 0)
+            Toast.makeText(ExpandList.this, "" + checkedId, Toast.LENGTH_SHORT).show();
     }
 
-    public class SecondLevelAdapter extends BaseExpandableListAdapter {
+    private void doModify() {
+//        if(mEmails.size() > 0)
+        if(checkedId != 0)
+            Toast.makeText(ExpandList.this, "" + checkedId, Toast.LENGTH_SHORT).show();
 
-        @Override
-        public Object getChild(int groupPosition, int childPosition) {
-            return childPosition;
+    }
+
+    private void doOK() {
+        StringBuilder mBuilder = new StringBuilder();
+        if (mEmails.size() > 0) {
+            for (String email : mEmails)
+                mBuilder.append(email + ",");
+            String emails = mBuilder.toString();
+            Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
         }
-
-        @Override
-        public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
-        }
-
-        @Override
-        public View getChildView(int groupPosition, int childPosition,
-                                 boolean isLastChild, View convertView, ViewGroup parent) {
-            TextView tv = new TextView(ExpandList.this);
-            tv.setText("child");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(20);
-            tv.setPadding(15, 5, 5, 5);
-            tv.setBackgroundColor(Color.YELLOW);
-            tv.setLayoutParams(new ListView.LayoutParams(
-                    ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.FILL_PARENT));
-            return tv;
-        }
-
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            return 5;
-        }
-
-        @Override
-        public Object getGroup(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public int getGroupCount() {
-            return 1;
-        }
-
-        @Override
-        public long getGroupId(int groupPosition) {
-            return groupPosition;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean isExpanded,
-                                 View convertView, ViewGroup parent) {
-            TextView tv = new TextView(ExpandList.this);
-            tv.setText("-->Second Level");
-            tv.setTextColor(Color.BLACK);
-            tv.setTextSize(20);
-            tv.setPadding(12, 7, 7, 7);
-            tv.setBackgroundColor(Color.RED);
-
-            return tv;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            // TODO Auto-generated method stub
-            return true;
-        }
-
-        @Override
-        public boolean isChildSelectable(int groupPosition, int childPosition) {
-            // TODO Auto-generated method stub
-            return true;
-        }
-
     }
 }

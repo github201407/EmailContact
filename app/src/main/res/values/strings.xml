@@ -13,4 +13,7 @@
     <string name="quit">退出</string>
     <string name="ok">确定</string>
     <string name="expand_title">ExpandableListView</string>
+    <string name="update">更新列表</string>
+    <string name="modify">编辑</string>
+    <string name="delete">删除</string>
 </resources>

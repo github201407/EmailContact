@@ -39,8 +39,8 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
 
     private void initActivity() {
         mOK = (Button)findViewById(R.id.ok);
-        mAll = (Button)findViewById(R.id.all);
-        mCancelAll = (Button)findViewById(R.id.cancelAll);
+        mAll = (Button)findViewById(R.id.modify);
+        mCancelAll = (Button)findViewById(R.id.delete);
         mCancel = (Button)findViewById(R.id.cancel);
         mAll.setOnClickListener(this);
         mOK.setOnClickListener(this);
@@ -136,10 +136,10 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
             case R.id.ok:
                 doOK();
                 break;
-            case R.id.all:
+            case R.id.modify:
                 mAdapter.setAll();
                 break;
-            case R.id.cancelAll:
+            case R.id.delete:
                 mAdapter.setCancelAll();
                 break;
             case R.id.cancel:
