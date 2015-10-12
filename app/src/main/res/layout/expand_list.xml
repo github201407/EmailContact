@@ -21,7 +21,6 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
 
-
         <ExpandableListView
             android:id="@id/android:list"
             android:layout_width="match_parent"
