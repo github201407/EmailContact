@@ -95,7 +95,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
         mDisplayName.setText(contact.getDisplay_name());
         mEmail.setText(contact.getEmail());
         mNumber.setText(contact.getNumber());
-        mType.setText(contact.getType());
+        mType.setText("" + contact.getType());
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ContactList.this);
         mBuilder.setView(view);
         mBuilder.setTitle("Edit..." + id);
@@ -106,7 +106,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
                 String email = mEmail.getText().toString();
                 String number = mNumber.getText().toString();
                 String type = mType.getText().toString();
-                Contact mContact = new Contact(number, displayName, email, type);
+                Contact mContact = new Contact(number, displayName, email, Integer.parseInt(type));
                 doUpdate(id, mContact);
             }
         });

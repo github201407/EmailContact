@@ -3,7 +3,6 @@ package com.example.administrator.emailcontact.provider;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.example.administrator.emailcontact.BuildConfig;
@@ -23,7 +22,7 @@ public class ContactProvider extends ContentProvider {
             ContactSQLiteHelper.ContactProviderColumns.NUMBER,
             ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME,
             ContactSQLiteHelper.ContactProviderColumns.EMAIL,
-            ContactSQLiteHelper.ContactProviderColumns.TYPE,
+            ContactSQLiteHelper.ContactProviderColumns.TYPE_ID,
     };
 
 

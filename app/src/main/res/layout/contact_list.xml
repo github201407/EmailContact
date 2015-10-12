@@ -16,7 +16,7 @@
             android:layout_centerVertical="true"
             android:textSize="18sp"
             android:layout_marginLeft="16dp"
-            android:text="Contacts List"
+            android:text="@string/title"
             android:textColor="@android:color/white"/>
 
         <Button
@@ -26,7 +26,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
-            android:text="ok"
+            android:text="@string/ok"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
@@ -50,19 +50,19 @@
             android:id="@+id/all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All"/>
+            android:text="@string/all"/>
         <Button
             android:id="@+id/cancelAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/all"
-            android:text="CancelAll"/>
+            android:text="@string/cancelAll"/>
         <Button
             android:id="@+id/cancel"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"/>
+            android:text="@string/quit"/>
 
     </RelativeLayout>
 </LinearLayout>

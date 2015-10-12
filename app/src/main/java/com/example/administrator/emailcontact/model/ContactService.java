@@ -15,13 +15,15 @@ public class ContactService {
     private ContactSQLiteHelper dbOpenHelper = null;
 
     public ContactService(Context context) {
-        dbOpenHelper = new ContactSQLiteHelper(context);
+        if(dbOpenHelper == null)
+            dbOpenHelper = new ContactSQLiteHelper(context);
     }
 
     public long insert(Contact contact) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ContentValues cv = contact.getContentValues();
         long row = db.insert(ContactSQLiteHelper.TABLE_NAME, null, cv);
+        db.close();
         Log.e("sql", "insert:" + row);
         return row;
     }
@@ -31,6 +33,7 @@ public class ContactService {
         String whereClause = ContactSQLiteHelper.ContactProviderColumns._ID + " = ?";
         String[] whereArgs = {Integer.toString(id)};
         int rows = db.delete(ContactSQLiteHelper.TABLE_NAME, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "delete:" + rows);
     }
 
@@ -41,6 +44,7 @@ public class ContactService {
         ContentValues cv = new ContentValues();
         cv.put(ContactSQLiteHelper.ContactProviderColumns.EMAIL, email);
         int result = db.update(ContactSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "update:" + result);
         return result;
     }
@@ -51,6 +55,7 @@ public class ContactService {
         String[] whereArgs = {Integer.toString(id)};
         ContentValues cv = contact.getContentValues();
         int result = db.update(ContactSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        db.close();
         Log.e("sql", "updateContact:" + result);
         return result;
     }
@@ -73,7 +78,7 @@ public class ContactService {
                 + ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME + ", "
                 + ContactSQLiteHelper.ContactProviderColumns.NUMBER + ", "
                 + ContactSQLiteHelper.ContactProviderColumns.EMAIL + ", "
-                + ContactSQLiteHelper.ContactProviderColumns.TYPE
+                + ContactSQLiteHelper.ContactProviderColumns.TYPE_ID
                 + " from "
                 + ContactSQLiteHelper.TABLE_NAME
                 + " where "
@@ -85,10 +90,29 @@ public class ContactService {
             String diaplayName = cursor.getString(0);
             String number = cursor.getString(1);
             String email = cursor.getString(2);
-            String type = cursor.getString(3);
+            int type = cursor.getInt(3);
             return new Contact(number, diaplayName, email, type);
         }
         return null;
+    }
+
+    public Cursor findByTypeId(int typeId){
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        String[] columns = {
+                ContactSQLiteHelper.ContactProviderColumns._ID ,
+                ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME,
+                ContactSQLiteHelper.ContactProviderColumns.EMAIL ,
+                ContactSQLiteHelper.ContactProviderColumns.NUMBER};
+        String selection = ContactSQLiteHelper.ContactProviderColumns.TYPE_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(typeId)};
+        Cursor cursor = db.query(ContactSQLiteHelper.TABLE_NAME, columns,selection,selectionArgs,null,null,null );
+        if(cursor == null)
+            return null;
+        if (!cursor.moveToNext()) {
+            cursor.close();
+            return null;
+        }
+        return cursor;
     }
 
 }

@@ -87,7 +87,7 @@ public class RecyclerAdapter extends CursorAdapter {
     public void setCancelAll(){
         for(int i = 0,n= mMap.size(); i < n; i++) {
             int key = mMap.keyAt(i);
-            mMap.put(key,false);
+            mMap.put(key,!mMap.valueAt(i));
         }
         notifyDataSetChanged();
     }

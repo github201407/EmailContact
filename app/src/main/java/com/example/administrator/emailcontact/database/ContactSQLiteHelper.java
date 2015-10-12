@@ -17,18 +17,8 @@ public class ContactSQLiteHelper extends SQLiteOpenHelper {
         public static final String NUMBER = "_number";
         public static final String DISPLAY_NAME = "_display_name";
         public static final String EMAIL = "_email";
-        public static final String TYPE = "_type";
+        public static final String TYPE_ID = "_type_id";
     }
-
-    public static final int NUMBER_INDEX = 1;
-    public static final int DISPLAY_NAME_INDEX = 2;
-    public static final int EMAIL_INDEX = 3;
-    public static final int TYPE_INDEX = 4;
-
-    public static class Type {
-        public static final String TYPE_WORK = "type_work";
-        public static final String TYPE_HOME = "type_home";
-    };
 
     public ContactSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -41,7 +31,7 @@ public class ContactSQLiteHelper extends SQLiteOpenHelper {
                 + ContactProviderColumns.DISPLAY_NAME + " TEXT, "
                 + ContactProviderColumns.NUMBER + " TEXT, "
                 + ContactProviderColumns.EMAIL + " TEXT, "
-                + ContactProviderColumns.TYPE +" TEXT);";
+                + ContactProviderColumns.TYPE_ID +" INTEGER);";
         sqLiteDatabase.execSQL(sql);
     }
 
