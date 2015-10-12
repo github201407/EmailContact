@@ -5,9 +5,11 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CursorTreeAdapter;
 import android.widget.TextView;
 
+import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -99,7 +101,9 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
      */
     @Override
     protected View newChildView(Context context, Cursor cursor, boolean isLastChild, ViewGroup parent) {
-        View view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, parent, false);
+        View view = mInflater.inflate(R.layout.contact_list_item, parent, false);
+        ViewHolder mHolder = new ViewHolder(view);
+        view.setTag(mHolder);
         return view;
     }
 
@@ -114,6 +118,30 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
      */
     @Override
     protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
-        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL)));
+        String name = cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME));
+        String email = cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL));
+        ViewHolder mHolder = (ViewHolder)view.getTag();
+        mHolder.setName(name);
+        mHolder.setEmail(email);
+    }
+
+    class ViewHolder{
+        TextView text1;
+        TextView text2;
+        CheckBox checkBox;
+
+        public ViewHolder(View view) {
+            text1 = (TextView) view.findViewById(R.id.text1);
+            text2 = (TextView) view.findViewById(R.id.text2);
+            checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+        }
+
+        public void setName(String name){
+            text1.setText(name);
+        }
+
+        public void setEmail(String email){
+            text2.setText(email);
+        }
     }
 }
