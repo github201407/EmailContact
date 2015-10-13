@@ -132,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void doExpand() {
-        startActivity(new Intent(this, ExpandList.class));
+        Intent intent = new Intent(this, ExpandList.class);
+        startActivityForResult(intent, 110);
     }
 
     private void doDownload() {
@@ -269,9 +270,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 101)
-            if(resultCode == RESULT_OK)
-                if(data != null)
-                    Toast.makeText(MainActivity.this,"Result:" + data.getStringExtra("email"), Toast.LENGTH_SHORT).show();
+        if(requestCode == 101) {
+            if (resultCode == RESULT_OK)
+                if (data != null)
+                    Toast.makeText(MainActivity.this, "Result:" + data.getStringExtra("email"), Toast.LENGTH_SHORT).show();
+        }
+        else if(requestCode == 110){
+            if (resultCode == RESULT_OK)
+                if (data != null)
+                    Toast.makeText(MainActivity.this, "Result:" + data.getStringExtra("email"), Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

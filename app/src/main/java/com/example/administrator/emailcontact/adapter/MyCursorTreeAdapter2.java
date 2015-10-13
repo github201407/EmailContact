@@ -19,6 +19,7 @@ import com.example.administrator.emailcontact.model.ContactService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by Administrator on 2015/10/10.
@@ -28,7 +29,7 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
     private Context mCtx;
     private LayoutInflater mInflater;
     private List<String> mEmails;
-    private SparseBooleanArray mMap = new SparseBooleanArray();
+    private Stack<Integer> mCheckedHistory = new Stack<>();
 
     /**
      * Constructor. The adapter will call {@link Cursor#requery()} on the cursor whenever
@@ -153,14 +154,20 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    //Toast.makeText(compoundButton.getContext(),getName(),Toast.LENGTH_SHORT).show();
                     if (b) {
                         if (!mEmails.contains(getEmail()))
                             mEmails.add(getEmail());
                         ExpandList.checkedId = getId();
+                        mCheckedHistory.push(getId());
                     } else {
                         if (mEmails.contains(getEmail()))
                             mEmails.remove(getEmail());
+                        if(!mCheckedHistory.isEmpty() && mCheckedHistory.peek() == getId()){
+                            mCheckedHistory.pop();
+                            if(!mCheckedHistory.isEmpty())
+                                ExpandList.checkedId = mCheckedHistory.peek();
+                        }
+
                     }
 
                 }
