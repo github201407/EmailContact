@@ -41,11 +41,9 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
         mOK = (Button)findViewById(R.id.ok);
         mAll = (Button)findViewById(R.id.modify);
         mCancelAll = (Button)findViewById(R.id.delete);
-        mCancel = (Button)findViewById(R.id.cancel);
         mAll.setOnClickListener(this);
         mOK.setOnClickListener(this);
         mCancelAll.setOnClickListener(this);
-        mCancel.setOnClickListener(this);
         ContactService mService = new ContactService(ContactList.this);
         Cursor mCursor = mService.defaultQuery();
         mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);
@@ -141,9 +139,6 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
                 break;
             case R.id.delete:
                 mAdapter.setCancelAll();
-                break;
-            case R.id.cancel:
-                finish();
                 break;
             default:
                 break;

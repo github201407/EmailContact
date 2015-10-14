@@ -3,7 +3,6 @@ package com.example.administrator.emailcontact.activity;
 import android.app.ExpandableListActivity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,17 +25,12 @@ public class ExpandList extends ExpandableListActivity implements View.OnClickLi
     private Button mOK;
     private Button mAll;
     private Button mCancelAll;
-    private Button mCancel;
     public static int checkedId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expand_list);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.expandToolbar);
-        toolbar.setTitle(getClass().getSimpleName());
-        toolbar.inflateMenu(R.menu.menu_expand_list);
 
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
@@ -87,10 +81,7 @@ public class ExpandList extends ExpandableListActivity implements View.OnClickLi
                 doModify();
                 break;
             case R.id.delete:
-               doDelete();
-                break;
-            case R.id.cancel:
-                finish();
+                doDelete();
                 break;
             default:
                 break;
@@ -98,13 +89,13 @@ public class ExpandList extends ExpandableListActivity implements View.OnClickLi
     }
 
     private void doDelete() {
-        if(checkedId != 0)
+        if (checkedId != 0)
             Toast.makeText(ExpandList.this, "" + checkedId, Toast.LENGTH_SHORT).show();
     }
 
     private void doModify() {
 //        if(mEmails.size() > 0)
-        if(checkedId != 0)
+        if (checkedId != 0)
             Toast.makeText(ExpandList.this, "" + checkedId, Toast.LENGTH_SHORT).show();
 
     }
