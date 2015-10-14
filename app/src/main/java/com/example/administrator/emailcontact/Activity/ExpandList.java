@@ -2,8 +2,10 @@ package com.example.administrator.emailcontact.activity;
 
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,11 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.administrator.emailcontact.MainActivity;
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.GroupService;
+import com.example.administrator.emailcontact.util.CursorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +91,8 @@ public class ExpandList extends ExpandableListActivity{
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_download){
+            doDownload();
         }
 
         return super.onOptionsItemSelected(item);
@@ -165,7 +171,7 @@ public class ExpandList extends ExpandableListActivity{
                 mBuilder.append(email + ",");
             String emails = mBuilder.toString();
             Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK, getIntent().putExtra("email", emails));
+            setResult(10, getIntent().putExtra("email", emails));
         }
         finish();
     }
@@ -175,5 +181,98 @@ public class ExpandList extends ExpandableListActivity{
         super.onPause();
         if (mAlertDialog != null && mAlertDialog.isShowing())
             mAlertDialog.dismiss();
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
+    private ProgressDialog dialog;
+    private void showProgress(){
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("DownLoading...");
+        dialog.setCancelable(false);
+        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.setMax(100);
+        dialog.show();
+    }
+
+    private void doDownload() {
+        new MyAsyncTask().execute();
+    }
+    private class MyAsyncTask extends AsyncTask<Void,Integer,Void> {
+
+        int rate = 0;
+
+        @Override
+        protected void onPreExecute() {
+            showProgress();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            doBackWork();
+            while (rate < 100) {
+                rate += 10;
+                publishProgress(rate);
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            dialog.setProgress(values[0].intValue());
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            dialog.dismiss();
+        }
+    }
+
+    private void doBackWork() {
+        Contact c1 = new Contact("123", "张三", "mail11@qq.com", 1);
+        Contact c2 = new Contact("123", "李四", "mail22@qq.com", 2);
+        Contact c3 = new Contact("123", "王五", "mail23@qq.com", 1);
+        Contact c4 = new Contact("123", "老六", "mail24@qq.com", 3);
+        Contact c5 = new Contact("123", "小七", "mail25@qq.com", 5);
+        Contact c6 = new Contact("123", "小七1", "1mail25@qq.com", 7);
+        Contact c7 = new Contact("123", "小七2", "2mail25@qq.com", 7);
+        Contact c8 = new Contact("123", "小七3", "3mail25@qq.com", 7);
+        ContactService mService = new ContactService(this);
+        List<Contact> mList = new ArrayList<Contact>();
+        mList.add(c1);
+        mList.add(c2);
+        mList.add(c3);
+        mList.add(c4);
+        mList.add(c5);
+        mList.add(c6);
+        mList.add(c7);
+        mList.add(c8);
+        for(Contact contact : mList)
+            mService.insert(contact);
+
+        GroupService mGroupService = new GroupService(this);
+        mGroupService.insert(-1, 1, "dev 1");
+        mGroupService.insert(-1, 1, "dev 2");
+        mGroupService.insert(-1, 1, "dev 3");
+        mGroupService.insert(-1, 1, "dev 4");
+        mGroupService.insert( 1, 0, "dev 5");
+        mGroupService.insert( 2, 0, "dev 6");
+        mGroupService.insert( 2, 0, "dev 7");
+        mGroupService.insert( 2, 0, "dev 8");
+        mGroupService.insert( 3, 0, "dev 9");
+        mGroupService.insert( 3, 0, "dev 10");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CursorUtil.closeDB();
     }
 }
