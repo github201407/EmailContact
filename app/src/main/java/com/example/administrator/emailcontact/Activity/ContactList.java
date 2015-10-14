@@ -22,13 +22,12 @@ import com.example.administrator.emailcontact.model.ContactService;
 /**
  * Created by Administrator on 2015/9/21.
  */
-public class ContactList extends ListActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class ContactList extends ListActivity implements AdapterView.OnItemClickListener {
 
     private RecyclerAdapter mAdapter;
     private Button mOK;
     private Button mAll;
     private Button mCancelAll;
-    private Button mCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +37,27 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     }
 
     private void initActivity() {
-        mOK = (Button)findViewById(R.id.ok);
-        mAll = (Button)findViewById(R.id.modify);
-        mCancelAll = (Button)findViewById(R.id.delete);
-        mCancel = (Button)findViewById(R.id.cancel);
-        mAll.setOnClickListener(this);
-        mOK.setOnClickListener(this);
-        mCancelAll.setOnClickListener(this);
-        mCancel.setOnClickListener(this);
+        mOK = (Button) findViewById(R.id.ok);
+        mAll = (Button) findViewById(R.id.modify);
+        mCancelAll = (Button) findViewById(R.id.delete);
+        mAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.setAll();
+            }
+        });
+        mOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doOK();
+            }
+        });
+        mCancelAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.setCancelAll();
+            }
+        });
         ContactService mService = new ContactService(ContactList.this);
         Cursor mCursor = mService.defaultQuery();
         mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);
@@ -59,6 +71,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     }
 
     AlertDialog mAlertDialog = null;
+
     private void showMenuDialog(final long id) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ContactList.this);
         mBuilder.setItems(new CharSequence[]{"Delete", "Modify"}, new DialogInterface.OnClickListener() {
@@ -77,7 +90,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
             }
         });
         mAlertDialog = mBuilder.create();
-        if(!isFinishing())
+        if (!isFinishing())
             mAlertDialog.show();
     }
 
@@ -85,12 +98,12 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
         ContactService mService = new ContactService(this);
         Contact contact = mService.find((int) id);
         View view = LayoutInflater.from(ContactList.this).inflate(R.layout.edit_dialog, null);
-        EditText mId = (EditText)view.findViewById(R.id.id);
+        EditText mId = (EditText) view.findViewById(R.id.id);
         mId.setEnabled(false);
-        final EditText mDisplayName = (EditText)view.findViewById(R.id.displayName);
-        final EditText mEmail = (EditText)view.findViewById(R.id.email);
-        final EditText mNumber = (EditText)view.findViewById(R.id.number);
-        final EditText mType = (EditText)view.findViewById(R.id.type);
+        final EditText mDisplayName = (EditText) view.findViewById(R.id.displayName);
+        final EditText mEmail = (EditText) view.findViewById(R.id.email);
+        final EditText mNumber = (EditText) view.findViewById(R.id.number);
+        final EditText mType = (EditText) view.findViewById(R.id.type);
         mId.setText(String.valueOf(id));
         mDisplayName.setText(contact.getDisplay_name());
         mEmail.setText(contact.getEmail());
@@ -117,7 +130,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
             }
         });
         mAlertDialog = mBuilder.create();
-        if(!isFinishing())
+        if (!isFinishing())
             mAlertDialog.show();
     }
 
@@ -130,32 +143,12 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
         setListAdapter(mAdapter);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.ok:
-                doOK();
-                break;
-            case R.id.modify:
-                mAdapter.setAll();
-                break;
-            case R.id.delete:
-                mAdapter.setCancelAll();
-                break;
-            case R.id.cancel:
-                finish();
-                break;
-            default:
-                break;
-        }
-    }
-
     private void doOK() {
         String str = mAdapter.getEmailStr();
-        if(!TextUtils.isEmpty(str)) {
+        if (!TextUtils.isEmpty(str)) {
             Toast.makeText(ContactList.this, str, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
-            intent.putExtra("email",str);
+            intent.putExtra("email", str);
             setResult(10, intent);
         }
         finish();
@@ -163,7 +156,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
 
     private void doDelete(long id) {
         ContactService mService = new ContactService(ContactList.this);
-        mService.delete((int)id);
+        mService.delete((int) id);
         setListAdapter(null);
         Cursor mCursor = mService.defaultQuery();
         mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);
@@ -173,7 +166,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     @Override
     protected void onPause() {
         super.onPause();
-        if(mAlertDialog != null && mAlertDialog.isShowing())
+        if (mAlertDialog != null && mAlertDialog.isShowing())
             mAlertDialog.dismiss();
     }
 }

@@ -5,19 +5,16 @@ import android.app.ExpandableListActivity;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
-import com.example.administrator.emailcontact.adapter.RecyclerAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.GroupService;
@@ -28,13 +25,12 @@ import java.util.List;
 /**
  * Created by Administrator on 2015/10/8.
  */
-public class ExpandList extends ExpandableListActivity implements View.OnClickListener {
+public class ExpandList extends ExpandableListActivity{
 
     private List<String> mEmails = new ArrayList<String>();
     private Button mOK;
-    private Button mAll;
-    private Button mCancelAll;
-    private Button mCancel;
+    private Button mModify;
+    private Button mDelete;
     public static int checkedId = 0;
 
     @Override
@@ -42,22 +38,36 @@ public class ExpandList extends ExpandableListActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expand_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.expandToolbar);
-        toolbar.setTitle(getClass().getSimpleName());
-        toolbar.inflateMenu(R.menu.menu_expand_list);
-
-        reInitExpandlistView();
+        GroupService mGroup = new GroupService(this);
+        Cursor mCursor = mGroup.queryParent(-1);
+        MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
+        setListAdapter(mAdapter);
         initActivity();
 
     }
 
     private void initActivity() {
         mOK = (Button) findViewById(R.id.ok);
-        mAll = (Button) findViewById(R.id.modify);
-        mCancelAll = (Button) findViewById(R.id.delete);
-        mAll.setOnClickListener(this);
-        mOK.setOnClickListener(this);
-        mCancelAll.setOnClickListener(this);
+        mModify = (Button) findViewById(R.id.modify);
+        mDelete = (Button) findViewById(R.id.delete);
+        mModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doModify();
+            }
+        });
+        mOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doOK();
+            }
+        });
+        mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doDelete();
+            }
+        });
     }
 
     @Override
@@ -80,26 +90,6 @@ public class ExpandList extends ExpandableListActivity implements View.OnClickLi
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ok:
-                doOK();
-                break;
-            case R.id.modify:
-                doModify();
-                break;
-            case R.id.delete:
-                doDelete();
-                break;
-            case R.id.cancel:
-                finish();
-                break;
-            default:
-                break;
-        }
     }
 
     private void reInitExpandlistView() {
