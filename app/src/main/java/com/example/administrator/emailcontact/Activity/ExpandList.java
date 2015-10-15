@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.administrator.emailcontact.MainActivity;
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
@@ -29,23 +28,20 @@ import java.util.List;
 /**
  * Created by Administrator on 2015/10/8.
  */
-public class ExpandList extends ExpandableListActivity{
+public class ExpandList extends ExpandableListActivity {
 
     private List<String> mEmails = new ArrayList<String>();
     private Button mOK;
     private Button mModify;
     private Button mDelete;
     public static int checkedId = 0;
+    private MyCursorTreeAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expand_list);
 
-        GroupService mGroup = new GroupService(this);
-        Cursor mCursor = mGroup.queryParent(-1);
-        MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-        setListAdapter(mAdapter);
         initActivity();
 
     }
@@ -91,7 +87,7 @@ public class ExpandList extends ExpandableListActivity{
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.action_download){
+        } else if (id == R.id.action_download) {
             doDownload();
         }
 
@@ -186,7 +182,8 @@ public class ExpandList extends ExpandableListActivity{
     }
 
     private ProgressDialog dialog;
-    private void showProgress(){
+
+    private void showProgress() {
         dialog = new ProgressDialog(this);
         dialog.setTitle("DownLoading...");
         dialog.setCancelable(false);
@@ -198,7 +195,8 @@ public class ExpandList extends ExpandableListActivity{
     private void doDownload() {
         new MyAsyncTask().execute();
     }
-    private class MyAsyncTask extends AsyncTask<Void,Integer,Void> {
+
+    private class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
 
         int rate = 0;
 
@@ -253,7 +251,7 @@ public class ExpandList extends ExpandableListActivity{
         mList.add(c6);
         mList.add(c7);
         mList.add(c8);
-        for(Contact contact : mList)
+        for (Contact contact : mList)
             mService.insert(contact);
 
         GroupService mGroupService = new GroupService(this);
@@ -261,18 +259,34 @@ public class ExpandList extends ExpandableListActivity{
         mGroupService.insert(-1, 1, "dev 2");
         mGroupService.insert(-1, 1, "dev 3");
         mGroupService.insert(-1, 1, "dev 4");
-        mGroupService.insert( 1, 0, "dev 5");
-        mGroupService.insert( 2, 0, "dev 6");
-        mGroupService.insert( 2, 0, "dev 7");
-        mGroupService.insert( 2, 0, "dev 8");
-        mGroupService.insert( 3, 0, "dev 9");
-        mGroupService.insert( 3, 0, "dev 10");
+        mGroupService.insert(1, 0, "dev 5");
+        mGroupService.insert(2, 0, "dev 6");
+        mGroupService.insert(2, 0, "dev 7");
+        mGroupService.insert(2, 0, "dev 8");
+        mGroupService.insert(3, 0, "dev 9");
+        mGroupService.insert(3, 0, "dev 10");
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        CursorUtil.closeDB();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GroupService mGroup = new GroupService(this);
+        Cursor mCursor = mGroup.queryParent(-1);
+        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
+        setListAdapter(mAdapter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAdapter != null)
+            mAdapter.changeCursor(null);
+        mAdapter = null;
     }
 }
