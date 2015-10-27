@@ -32,7 +32,7 @@ public class Contacts {
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.rj.soft.contact";
 
     /*Authority*/
-    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".contactprovider";
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".ContactProvider";
 
     /*Content URI*/
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/item");

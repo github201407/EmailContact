@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
+import com.example.administrator.emailcontact.provider.Contacts;
 import com.example.administrator.emailcontact.util.CursorUtil;
 
 /**
@@ -16,14 +17,14 @@ public class ContactService {
     private ContactSQLiteHelper dbOpenHelper = null;
 
     public ContactService(Context context) {
-        if(dbOpenHelper == null)
+        if (dbOpenHelper == null)
             dbOpenHelper = new ContactSQLiteHelper(context);
     }
 
     public long insert(Contact contact) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ContentValues cv = contact.getContentValues();
-        long row = db.insert(ContactSQLiteHelper.TABLE_NAME, null, cv);
+        long row = db.insert(Contacts.TABLE_NAME, null, cv);
         db.close();
         Log.e("sql", "insert:" + row);
         return row;
@@ -31,31 +32,31 @@ public class ContactService {
 
     public void delete(int id) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        String whereClause = ContactSQLiteHelper.ContactProviderColumns._ID + " = ?";
+        String whereClause = Contacts.ID + " = ?";
         String[] whereArgs = {Integer.toString(id)};
-        int rows = db.delete(ContactSQLiteHelper.TABLE_NAME, whereClause, whereArgs);
+        int rows = db.delete(Contacts.TABLE_NAME, whereClause, whereArgs);
         db.close();
         Log.e("sql", "delete:" + rows);
     }
 
     public int update(int id, String email) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        String whereClause = ContactSQLiteHelper.ContactProviderColumns._ID + " = ?";
+        String whereClause = Contacts.ID + " = ?";
         String[] whereArgs = {Integer.toString(id)};
         ContentValues cv = new ContentValues();
-        cv.put(ContactSQLiteHelper.ContactProviderColumns.EMAIL, email);
-        int result = db.update(ContactSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        cv.put(Contacts.EMAIL, email);
+        int result = db.update(Contacts.TABLE_NAME, cv, whereClause, whereArgs);
         db.close();
         Log.e("sql", "update:" + result);
         return result;
     }
 
-    public int updateContact(int id, Contact contact){
+    public int updateContact(int id, Contact contact) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        String whereClause = ContactSQLiteHelper.ContactProviderColumns._ID + " = ?";
+        String whereClause = Contacts.ID + " = ?";
         String[] whereArgs = {Integer.toString(id)};
         ContentValues cv = contact.getContentValues();
-        int result = db.update(ContactSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
+        int result = db.update(Contacts.TABLE_NAME, cv, whereClause, whereArgs);
         db.close();
         Log.e("sql", "updateContact:" + result);
         return result;
@@ -63,28 +64,28 @@ public class ContactService {
 
     public Cursor query(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query(ContactSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+        Cursor cursor = db.query(Contacts.TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
         CursorUtil.addCursor(cursor);
         return cursor;
     }
 
     public Cursor defaultQuery() {
-        return this.query(new String[]{ContactSQLiteHelper.ContactProviderColumns._ID,
-                ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME,
-                ContactSQLiteHelper.ContactProviderColumns.EMAIL}, null, null, null, null, null);
+        return this.query(new String[]{Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL}, null, null, null, null, null);
     }
 
     public Contact find(int id) {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         String sql = "select "
-                + ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME + ", "
-                + ContactSQLiteHelper.ContactProviderColumns.NUMBER + ", "
-                + ContactSQLiteHelper.ContactProviderColumns.EMAIL + ", "
-                + ContactSQLiteHelper.ContactProviderColumns.TYPE_ID
+                + Contacts.DISPLAY_NAME + ", "
+                + Contacts.NUMBER + ", "
+                + Contacts.EMAIL + ", "
+                + Contacts.TYPE_ID
                 + " from "
-                + ContactSQLiteHelper.TABLE_NAME
+                + Contacts.TABLE_NAME
                 + " where "
-                + ContactSQLiteHelper.ContactProviderColumns._ID
+                + Contacts.ID
                 + " = ?";
         Log.e("sql", sql);
         Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(id)});
@@ -99,18 +100,18 @@ public class ContactService {
         return null;
     }
 
-    public Cursor findByTypeId(int typeId){
+    public Cursor findByTypeId(int typeId) {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         String[] columns = {
-                ContactSQLiteHelper.ContactProviderColumns._ID ,
-                ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME,
-                ContactSQLiteHelper.ContactProviderColumns.EMAIL ,
-                ContactSQLiteHelper.ContactProviderColumns.NUMBER};
-        String selection = ContactSQLiteHelper.ContactProviderColumns.TYPE_ID + " = ?";
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER};
+        String selection = Contacts.TYPE_ID + " = ?";
         String[] selectionArgs = {String.valueOf(typeId)};
-        Cursor cursor = db.query(ContactSQLiteHelper.TABLE_NAME, columns,selection,selectionArgs,null,null,null );
+        Cursor cursor = db.query(Contacts.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
         CursorUtil.addCursor(cursor);
-        if(cursor == null)
+        if (cursor == null)
             return null;
         if (!cursor.moveToNext()) {
             cursor.close();

@@ -13,9 +13,10 @@
 
         <provider
             android:name=".provider.ContactProvider"
-            android:authorities=".contactprovider"
+            android:authorities="${applicationId}.ContactProvider"
             android:label="@string/app_name"
-            android:multiprocess="false"/>
+            android:multiprocess="true" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

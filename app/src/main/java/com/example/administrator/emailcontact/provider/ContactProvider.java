@@ -53,7 +53,9 @@ public class ContactProvider extends ContentProvider {
     public boolean onCreate() {
         Context mContext = getContext();
         dbHelper = new ContactSQLiteHelper(mContext);
-        resolver = mContext.getContentResolver();
+        if (mContext != null) {
+            resolver = mContext.getContentResolver();
+        }
         return true;
     }
 
@@ -69,20 +71,20 @@ public class ContactProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case Contacts.ITEM: {
-                sqlBuilder.setTables(Contacts.DATABASE_NAME);
+                sqlBuilder.setTables(Contacts.TABLE_NAME);
                 sqlBuilder.setProjectionMap(contactProjectionMap);
                 break;
             }
             case Contacts.ITEM_ID: {
                 String id = uri.getPathSegments().get(1);
-                sqlBuilder.setTables(Contacts.DATABASE_NAME);
+                sqlBuilder.setTables(Contacts.TABLE_NAME);
                 sqlBuilder.setProjectionMap(contactProjectionMap);
                 sqlBuilder.appendWhere(Contacts.ID + "=" + id);
                 break;
             }
             case Contacts.ITEM_POS: {
                 String pos = uri.getPathSegments().get(1);
-                sqlBuilder.setTables(Contacts.DATABASE_NAME);
+                sqlBuilder.setTables(Contacts.TABLE_NAME);
                 sqlBuilder.setProjectionMap(contactProjectionMap);
                 limit = pos + ", 1";
                 break;
@@ -119,7 +121,7 @@ public class ContactProvider extends ContentProvider {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        long id = db.insert(Contacts.DATABASE_NAME, Contacts.ID, contentValues);
+        long id = db.insert(Contacts.TABLE_NAME, Contacts.ID, contentValues);
         if (id < 0) {
             throw new SQLiteException("Unable to insert " + contentValues + " for " + uri);
         }
@@ -137,12 +139,12 @@ public class ContactProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case Contacts.ITEM: {
-                count = db.delete(Contacts.DATABASE_NAME, selection, selectionArgs);
+                count = db.delete(Contacts.TABLE_NAME, selection, selectionArgs);
                 break;
             }
             case Contacts.ITEM_ID: {
                 String id = uri.getPathSegments().get(1);
-                count = db.delete(Contacts.DATABASE_NAME, Contacts.ID + "=" + id
+                count = db.delete(Contacts.TABLE_NAME, Contacts.ID + "=" + id
                         + (!TextUtils.isEmpty(selection) ? " and (" + selection + ')' : ""), selectionArgs);
                 break;
             }
@@ -162,12 +164,12 @@ public class ContactProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case Contacts.ITEM: {
-                count = db.update(Contacts.DATABASE_NAME, contentValues, selection, selectionArgs);
+                count = db.update(Contacts.TABLE_NAME, contentValues, selection, selectionArgs);
                 break;
             }
             case Contacts.ITEM_ID: {
                 String id = uri.getPathSegments().get(1);
-                count = db.update(Contacts.DATABASE_NAME, contentValues, Contacts.ID + "=" + id
+                count = db.update(Contacts.TABLE_NAME, contentValues, Contacts.ID + "=" + id
                         + (!TextUtils.isEmpty(selection) ? " and (" + selection + ')' : ""), selectionArgs);
                 break;
             }

@@ -3,6 +3,7 @@ package com.example.administrator.emailcontact.model;
 import android.content.ContentValues;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
+import com.example.administrator.emailcontact.provider.Contacts;
 
 /**
  * Created by Administrator on 2015/9/18.
@@ -54,18 +55,18 @@ public class Contact {
 
     public ContentValues getContentValues(){
         ContentValues mContentValues = new ContentValues();
-        mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.NUMBER, number);
-        mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.EMAIL, email);
-        mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME, display_name);
-        mContentValues.put(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID, type);
+        mContentValues.put(Contacts.NUMBER, number);
+        mContentValues.put(Contacts.EMAIL, email);
+        mContentValues.put(Contacts.DISPLAY_NAME, display_name);
+        mContentValues.put(Contacts.TYPE_ID, type);
         return mContentValues;
     }
 
     public static Contact getContact(ContentValues contentValues){
-        return new Contact(contentValues.getAsString(ContactSQLiteHelper.ContactProviderColumns.NUMBER),
-                contentValues.getAsString(ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME),
-                contentValues.getAsString(ContactSQLiteHelper.ContactProviderColumns.EMAIL),
-                contentValues.getAsInteger(ContactSQLiteHelper.ContactProviderColumns.TYPE_ID)
+        return new Contact(contentValues.getAsString(Contacts.NUMBER),
+                contentValues.getAsString(Contacts.DISPLAY_NAME),
+                contentValues.getAsString(Contacts.EMAIL),
+                contentValues.getAsInteger(Contacts.TYPE_ID)
                 );
     }
 }
