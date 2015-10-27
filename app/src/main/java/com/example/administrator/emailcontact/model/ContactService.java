@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
+import com.example.administrator.emailcontact.util.CursorUtil;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -63,6 +64,7 @@ public class ContactService {
     public Cursor query(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         Cursor cursor = db.query(ContactSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+        CursorUtil.addCursor(cursor);
         return cursor;
     }
 
@@ -93,6 +95,7 @@ public class ContactService {
             int type = cursor.getInt(3);
             return new Contact(number, diaplayName, email, type);
         }
+        cursor.close();
         return null;
     }
 
@@ -106,6 +109,7 @@ public class ContactService {
         String selection = ContactSQLiteHelper.ContactProviderColumns.TYPE_ID + " = ?";
         String[] selectionArgs = {String.valueOf(typeId)};
         Cursor cursor = db.query(ContactSQLiteHelper.TABLE_NAME, columns,selection,selectionArgs,null,null,null );
+        CursorUtil.addCursor(cursor);
         if(cursor == null)
             return null;
         if (!cursor.moveToNext()) {

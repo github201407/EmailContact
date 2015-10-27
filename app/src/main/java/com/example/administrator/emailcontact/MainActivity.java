@@ -1,20 +1,17 @@
 package com.example.administrator.emailcontact;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.QuickContactBadge;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.administrator.emailcontact.activity.ContactList;
 import com.example.administrator.emailcontact.activity.ExpandList;
@@ -25,7 +22,7 @@ import com.example.administrator.emailcontact.model.GroupService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends Activity{
 
     private EditText mId;
     private EditText mDisplayName;
@@ -44,17 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         initActivity();
     }
@@ -72,13 +58,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDelete = (Button) findViewById(R.id.delete);
         mUpdate = (Button) findViewById(R.id.update);
         mDownload = (Button) findViewById(R.id.download);
-        mShow.setOnClickListener(this);
-        mExpand.setOnClickListener(this);
-        mAdd.setOnClickListener(this);
-        mSearch.setOnClickListener(this);
-        mDelete.setOnClickListener(this);
-        mUpdate.setOnClickListener(this);
-        mDownload.setOnClickListener(this);
+        mShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doShow();
+            }
+        });
+        mExpand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doExpand();
+            }
+        });
+        mAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doAdd();
+            }
+        });
+        mSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSearch();
+            }
+        });
+        mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doDelete();
+            }
+        });
+        mUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doUpdate();
+            }
+        });
+        mDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doDownload();
+            }
+        });
     }
 
     @Override
@@ -103,37 +124,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.show:
-                doShow();
-                break;
-            case R.id.expand:
-                doExpand();
-                break;
-            case R.id.add:
-                doAdd();
-                break;
-            case R.id.search:
-                doSearch();
-                break;
-            case R.id.delete:
-                doDelete();
-                break;
-            case R.id.update:
-                doUpdate();
-                break;
-            case R.id.download:
-                doDownload();
-                break;
-            default:
-                break;
-        }
-    }
 
     private void doExpand() {
-        startActivity(new Intent(this, ExpandList.class));
+        Intent intent = new Intent(this, ExpandList.class);
+        startActivityForResult(intent, 110);
     }
 
     private void doDownload() {
@@ -192,6 +186,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Contact c3 = new Contact("123", "王五", "mail23@qq.com", 1);
         Contact c4 = new Contact("123", "老六", "mail24@qq.com", 3);
         Contact c5 = new Contact("123", "小七", "mail25@qq.com", 5);
+        Contact c6 = new Contact("123", "小七1", "1mail25@qq.com", 7);
+        Contact c7 = new Contact("123", "小七2", "2mail25@qq.com", 7);
+        Contact c8 = new Contact("123", "小七3", "3mail25@qq.com", 7);
         ContactService mService = new ContactService(MainActivity.this);
         List<Contact> mList = new ArrayList<Contact>();
         mList.add(c1);
@@ -199,6 +196,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mList.add(c3);
         mList.add(c4);
         mList.add(c5);
+        mList.add(c6);
+        mList.add(c7);
+        mList.add(c8);
         for(Contact contact : mList)
             mService.insert(contact);
 
@@ -208,6 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGroupService.insert(-1, 1, "dev 3");
         mGroupService.insert(-1, 1, "dev 4");
         mGroupService.insert( 1, 0, "dev 5");
+        mGroupService.insert( 2, 0, "dev 6");
+        mGroupService.insert( 2, 0, "dev 7");
+        mGroupService.insert( 2, 0, "dev 8");
+        mGroupService.insert( 3, 0, "dev 9");
+        mGroupService.insert( 3, 0, "dev 10");
 
     }
 
@@ -259,9 +264,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 101)
-            if(resultCode == RESULT_OK)
-                if(data != null)
-                    Toast.makeText(MainActivity.this,"Result:" + data.getStringExtra("email"), Toast.LENGTH_SHORT).show();
+        if(requestCode == 101) {
+            if (resultCode == RESULT_OK)
+                if (data != null)
+                    Toast.makeText(MainActivity.this, "Result:" + data.getStringExtra("email"), Toast.LENGTH_SHORT).show();
+        }
+        else if(requestCode == 110){
+            if (resultCode == RESULT_OK)
+                if (data != null)
+                    Toast.makeText(MainActivity.this, "Result:" + data.getStringExtra("email"), Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
