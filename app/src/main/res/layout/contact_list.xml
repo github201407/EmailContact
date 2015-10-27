@@ -4,36 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#3f51b5"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textSize="18sp"
-            android:layout_marginLeft="16dp"
-            android:text="@string/title"
-            android:textColor="@android:color/white"/>
-
-        <Button
-            android:id="@+id/ok"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:background="@android:color/transparent"
-            android:text="@string/ok"
-            android:textColor="@android:color/white" />
-    </RelativeLayout>
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:drawSelectorOnTop="false" />
 
@@ -41,28 +16,28 @@
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No data" />
+        android:text="@string/nodata" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/all"
+            android:id="@+id/modify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/all"/>
         <Button
-            android:id="@+id/cancelAll"
+            android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/all"
+            android:layout_toRightOf="@+id/modify"
             android:text="@string/cancelAll"/>
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/ok"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/quit"/>
+            android:text="@string/ok"/>
 
     </RelativeLayout>
 </LinearLayout>
