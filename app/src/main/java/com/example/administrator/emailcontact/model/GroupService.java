@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
+import com.example.administrator.emailcontact.util.CursorUtil;
 
 /**
  * Created by Administrator on 2015/10/8.
@@ -60,6 +61,7 @@ public class GroupService {
     public Cursor query(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         Cursor cursor = db.query(GroupSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
+        CursorUtil.addCursor(cursor);
         return cursor;
     }
 
@@ -85,6 +87,7 @@ public class GroupService {
         String selection = GroupSQLiteHelper.GroupColumns.PARENT + " = ?";
         String[] selectionArgs = {String.valueOf(parent)};
         Cursor cursor = db.query(GroupSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+        CursorUtil.addCursor(cursor);
         if (cursor == null)
             return null;
         if (!cursor.moveToNext()) {

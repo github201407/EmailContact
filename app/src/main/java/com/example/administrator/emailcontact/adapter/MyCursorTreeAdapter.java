@@ -12,6 +12,8 @@ import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.GroupService;
 import com.example.administrator.emailcontact.view.MyExpandableListView;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2015/10/9.
  */
@@ -19,18 +21,20 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     private Context mCtx;
     private LayoutInflater mInflater;
+    private List<String> mEmails;
 
-    public MyCursorTreeAdapter(Cursor cursor, Context context) {
+    public MyCursorTreeAdapter(Cursor cursor, Context context, List<String> mEmails) {
         super(cursor, context);
         this.mCtx = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mEmails = mEmails;
     }
 
     @Override
     protected Cursor getChildrenCursor(Cursor cursor) {
-        int contact_type_id = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
+        int child_parent = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
         GroupService mGroupService = new GroupService(mCtx);
-        Cursor mCursor = mGroupService.queryParent(contact_type_id);
+        Cursor mCursor = mGroupService.queryParent(child_parent);
         return mCursor;
     }
 
@@ -48,7 +52,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     @Override
     protected View newChildView(Context context, Cursor cursor, boolean b, ViewGroup viewGroup) {
         MyExpandableListView view = new MyExpandableListView(context);
-        view.setPadding(20, 0, 0, 0);
+        view.setPadding(20,0,0,0);
         return view;
     }
 
@@ -56,7 +60,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     protected void bindChildView(View view, Context context, Cursor cursor, boolean b) {
         if (b) {
             MyExpandableListView mListView = (MyExpandableListView) view;
-            MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, context);
+            MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, context, mEmails);
             mListView.setAdapter(myCursorTreeAdapter2);
         }
     }
