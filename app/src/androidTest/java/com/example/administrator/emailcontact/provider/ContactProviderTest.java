@@ -42,7 +42,8 @@ public class ContactProviderTest extends ProviderTestCase2<ContactProvider> {
     }
 
     public void testQuery() throws Exception {
-       Cursor mCursor = mContentResolver.query(Contacts.CONTENT_URI, new String[]{Contacts.DISPLAY_NAME, Contacts.EMAIL}, null, null, Contacts.DEFAULT_SORT_ORDER);
+       Cursor mCursor = mContentResolver.query(Contacts.CONTENT_URI, new String[]{Contacts.DISPLAY_NAME,
+               Contacts.EMAIL}, null, null, Contacts.DEFAULT_SORT_ORDER);
         assert mCursor != null;
         int mCount = mCursor.getCount();
         Log.e(TAG,"Count:" + mCount);

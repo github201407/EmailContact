@@ -2,6 +2,9 @@ package com.example.administrator.emailcontact.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +12,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.administrator.emailcontact.R;
 
 import java.util.ArrayList;
@@ -23,9 +29,10 @@ public class RecyclerAdapter extends CursorAdapter {
 
     private List<String> mList = new ArrayList<String>();
     private SparseBooleanArray mMap = new SparseBooleanArray();
-
+    private Context mCtx;
     public RecyclerAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);
+        this.mCtx = context;
         while(c.moveToNext()){
             int id = c.getInt(0);
             String email = c.getString(2);
@@ -51,17 +58,21 @@ public class RecyclerAdapter extends CursorAdapter {
     }
 
     class ViewHolder {
+        ImageView icon;
         TextView text1;
         TextView text2;
         CheckBox checkBox;
 
         public ViewHolder(View view) {
+            icon = (ImageView) view.findViewById(R.id.icon);
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
         }
 
         public void setData(final int id, String displayName, final String email) {
+//            Glide.with(mCtx).load("http://img0.bdstatic.com/img/image/shouye/fengjing1028.jpg").into(icon);
+            setImage("http://img0.bdstatic.com/img/image/shouye/mingxing1028.jpg");
             text1.setText(displayName);
             text2.setText(email);
             checkBox.setTag(email);
@@ -74,6 +85,19 @@ public class RecyclerAdapter extends CursorAdapter {
                 }
             });
         }
+
+        public void setImage(String url){
+            Glide.with(mCtx).load(url).asBitmap().centerCrop().placeholder(R.drawable.ic_launcher).animate(android.R.anim.fade_in).into(new BitmapImageViewTarget(icon) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(mCtx.getResources(), resource);
+                    circularBitmapDrawable.setCornerRadius(50);
+                    icon.setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        }
+
     }
 
     public void setAll(){

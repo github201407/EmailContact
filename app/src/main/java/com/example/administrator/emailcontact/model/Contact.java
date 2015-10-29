@@ -9,16 +9,32 @@ import com.example.administrator.emailcontact.provider.Contacts;
  * Created by Administrator on 2015/9/18.
  */
 public class Contact {
+    int id;
     String number;
     String display_name;
     String email;
     int type;
 
+    public Contact(int id, String number, String display_name, String email, int type) {
+        this.id = id;
+        this.number = number;
+        this.display_name = display_name;
+        this.email = email;
+        this.type = type;
+    }
     public Contact(String number, String display_name, String email, int type) {
         this.number = number;
         this.display_name = display_name;
         this.email = email;
         this.type = type;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNumber() {
@@ -53,7 +69,7 @@ public class Contact {
         this.type = type;
     }
 
-    public ContentValues getContentValues(){
+    public ContentValues getContentValues() {
         ContentValues mContentValues = new ContentValues();
         mContentValues.put(Contacts.NUMBER, number);
         mContentValues.put(Contacts.EMAIL, email);
@@ -62,11 +78,13 @@ public class Contact {
         return mContentValues;
     }
 
-    public static Contact getContact(ContentValues contentValues){
-        return new Contact(contentValues.getAsString(Contacts.NUMBER),
+    public static Contact getContact(ContentValues contentValues) {
+        return new Contact(
+                contentValues.getAsInteger(Contacts.ID),
+                contentValues.getAsString(Contacts.NUMBER),
                 contentValues.getAsString(Contacts.DISPLAY_NAME),
                 contentValues.getAsString(Contacts.EMAIL),
                 contentValues.getAsInteger(Contacts.TYPE_ID)
-                );
+        );
     }
 }
