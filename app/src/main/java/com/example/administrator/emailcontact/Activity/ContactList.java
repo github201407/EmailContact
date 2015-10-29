@@ -1,17 +1,24 @@
 package com.example.administrator.emailcontact.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
@@ -24,10 +31,28 @@ import com.example.administrator.emailcontact.model.ContactService;
  */
 public class ContactList extends ListActivity implements AdapterView.OnItemClickListener {
 
+    private static final String TAG = "ContactList";
     private RecyclerAdapter mAdapter;
     private Button mOK;
     private Button mAll;
     private Button mCancelAll;
+    private TextView mTitle;
+    private Button mBack;
+    private EditText mSearchEdt;
+    private Button mSearchBtn;
+    private ContactService mService;
+
+    public static void InstanceList(Context context){
+        Intent intent = new Intent(context,ContactList.class);
+        Bundle bundle;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+            context.startActivity(intent, bundle);
+            ((Activity)context).finish();
+        }else {
+            context.startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +62,44 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     }
 
     private void initActivity() {
+        mTitle = (TextView) findViewById(R.id.title);
+        mTitle.setText(R.string.search);
+        mBack = (Button) findViewById(R.id.back);
+        mBack.setText(R.string.title);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExpandList.InstanceList(ContactList.this);
+                ContactList.this.finish();
+            }
+        });
+        mSearchEdt = (EditText) findViewById(R.id.search_edt);
+        mSearchBtn = (Button) findViewById(R.id.search_btn);
+        mSearchEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                Cursor mCursor = mService.search(text);
+                mAdapter.changeCursor(mCursor);
+                Log.e(TAG, text);
+            }
+        });
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ContactList.InstanceList(ExpandList.this);
+            }
+        });
         mOK = (Button) findViewById(R.id.ok);
         mAll = (Button) findViewById(R.id.modify);
         mCancelAll = (Button) findViewById(R.id.delete);
@@ -58,7 +121,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
                 mAdapter.setCancelAll();
             }
         });
-        ContactService mService = new ContactService(ContactList.this);
+        mService = new ContactService(ContactList.this);
         Cursor mCursor = mService.defaultQuery();
         mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);
         setListAdapter(mAdapter);

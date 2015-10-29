@@ -1,9 +1,13 @@
 package com.example.administrator.emailcontact.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
@@ -34,8 +40,23 @@ public class ExpandList extends ExpandableListActivity {
     private Button mOK;
     private Button mModify;
     private Button mDelete;
+    private EditText mSearchEdt;
+    private Button mSearchBtn;
     public static int checkedId = 0;
     private MyCursorTreeAdapter mAdapter;
+    private TextView mTitle;
+
+    public static void InstanceList(Context context){
+        Intent intent = new Intent(context,ExpandList.class);
+        Bundle bundle;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+            context.startActivity(intent, bundle);
+            ((Activity)context).finish();
+        }else {
+            context.startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +85,11 @@ public class ExpandList extends ExpandableListActivity {
     }
 
     private void initActivity() {
+        mTitle = (TextView) findViewById(R.id.title);
+        mTitle.setText(R.string.title);
         mOK = (Button) findViewById(R.id.ok);
+        mSearchEdt = (EditText) findViewById(R.id.search_edt);
+        mSearchBtn = (Button) findViewById(R.id.search_btn);
         mModify = (Button) findViewById(R.id.modify);
         mDelete = (Button) findViewById(R.id.delete);
         mModify.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +108,18 @@ public class ExpandList extends ExpandableListActivity {
             @Override
             public void onClick(View v) {
                 doDelete();
+            }
+        });
+        mSearchEdt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContactList.InstanceList(ExpandList.this);
+            }
+        });
+        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContactList.InstanceList(ExpandList.this);
             }
         });
     }

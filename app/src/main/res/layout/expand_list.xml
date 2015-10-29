@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
+    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".activity.ExpandList">
+
+    <include layout="@layout/title_bar_and_search" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,28 +27,25 @@
             android:layout_height="match_parent"
             android:text="@string/nodata" />
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/modify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/modify"/>
+            android:text="@string/modify" />
+
         <Button
             android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/modify"
-            android:text="@string/delete"
-            />
-        <Button
-            android:id="@+id/ok"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ok"/>
+            android:text="@string/delete" />
+
 
     </RelativeLayout>
 </LinearLayout>

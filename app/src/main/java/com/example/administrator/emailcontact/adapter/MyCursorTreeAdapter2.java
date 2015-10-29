@@ -16,6 +16,7 @@ import com.example.administrator.emailcontact.activity.ExpandList;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
+import com.example.administrator.emailcontact.provider.Contacts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,9 +131,9 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
      */
     @Override
     protected void bindChildView(View view, Context context, Cursor cursor, boolean isLastChild) {
-        int id = cursor.getInt(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns._ID));
-        String name = cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.DISPLAY_NAME));
-        String email = cursor.getString(cursor.getColumnIndex(ContactSQLiteHelper.ContactProviderColumns.EMAIL));
+        int id = cursor.getInt(cursor.getColumnIndex(Contacts.ID));
+        String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+        String email = cursor.getString(cursor.getColumnIndex(Contacts.EMAIL));
         ViewHolder mHolder = (ViewHolder) view.getTag();
         mHolder.setId(id);
         mHolder.setName(name);

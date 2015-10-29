@@ -8,7 +8,7 @@
     <string name="type">类型</string>
     <string name="displayName">名字</string>
 
-    <string name="title">联系人列表</string>
+    <string name="title">联系人</string>
     <string name="all">全选</string>
     <string name="cancelAll">反选</string>
     <string name="quit">退出</string>
@@ -18,4 +18,9 @@
     <string name="modify">编辑</string>
     <string name="delete">删除</string>
     <string name="nodata">No data</string>
+    <string name="search">搜索</string>
+    <string name="back">返回</string>
+    <string name="edt_hint">请输入关键词（至少两个字）</string>
+    <string name="contact">没有找到联系人</string>
+    <string name="icon">icon</string>
 </resources>
