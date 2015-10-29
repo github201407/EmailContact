@@ -89,6 +89,7 @@ public class ExpandList extends ExpandableListActivity {
         mTitle.setText(R.string.title);
         mOK = (Button) findViewById(R.id.ok);
         mSearchEdt = (EditText) findViewById(R.id.search_edt);
+        mSearchEdt.setFocusable(false);
         mSearchBtn = (Button) findViewById(R.id.search_btn);
         mModify = (Button) findViewById(R.id.modify);
         mDelete = (Button) findViewById(R.id.delete);

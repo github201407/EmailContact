@@ -40,6 +40,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.ModifyContact"
+            android:label="@string/title"
+            android:logo="@android:color/transparent"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

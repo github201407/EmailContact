@@ -5,8 +5,9 @@
 
     <string name="number">号码</string>
     <string name="email">邮箱</string>
-    <string name="type">类型</string>
-    <string name="displayName">名字</string>
+    <string name="type">群组</string>
+    <string name="displayName">姓名</string>
+    <string name="id">编号</string>
 
     <string name="title">联系人</string>
     <string name="all">全选</string>
@@ -23,4 +24,6 @@
     <string name="edt_hint">请输入关键词（至少两个字）</string>
     <string name="contact">没有找到联系人</string>
     <string name="icon">icon</string>
+    <string name="modifycontact">编辑联系人</string>
+
 </resources>

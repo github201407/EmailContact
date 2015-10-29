@@ -9,6 +9,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.administrator.emailcontact.R;
+import com.example.administrator.emailcontact.activity.ContactList;
+import com.example.administrator.emailcontact.activity.ModifyContact;
+import com.example.administrator.emailcontact.model.ContactService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,17 +66,19 @@ public class RecyclerAdapter extends CursorAdapter {
         TextView text1;
         TextView text2;
         CheckBox checkBox;
+        Button delete, modify;
 
         public ViewHolder(View view) {
             icon = (ImageView) view.findViewById(R.id.icon);
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+            delete = (Button) view.findViewById(R.id.item_delete);
+            modify = (Button) view.findViewById(R.id.item_modify);
         }
 
         public void setData(final int id, String displayName, final String email) {
-//            Glide.with(mCtx).load("http://img0.bdstatic.com/img/image/shouye/fengjing1028.jpg").into(icon);
-            setImage("http://img0.bdstatic.com/img/image/shouye/mingxing1028.jpg");
+            setImage("");
             text1.setText(displayName);
             text2.setText(email);
             checkBox.setTag(email);
@@ -84,10 +90,23 @@ public class RecyclerAdapter extends CursorAdapter {
                     mMap.put(id, checkBox.isChecked());
                 }
             });
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ContactService mService = new ContactService(v.getContext());
+                    mService.delete(id);
+                }
+            });
+            modify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ModifyContact.Instance(v.getContext(), id, R.string.search);
+                }
+            });
         }
 
         public void setImage(String url){
-            Glide.with(mCtx).load(url).asBitmap().centerCrop().placeholder(R.drawable.ic_launcher).animate(android.R.anim.fade_in).into(new BitmapImageViewTarget(icon) {
+            Glide.with(mCtx).load(url).asBitmap().centerCrop().placeholder(R.mipmap.head_woman).animate(android.R.anim.fade_in).into(new BitmapImageViewTarget(icon) {
                 @Override
                 protected void setResource(Bitmap resource) {
                     RoundedBitmapDrawable circularBitmapDrawable =
