@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.administrator.emailcontact.R;
-import com.example.administrator.emailcontact.activity.ContactList;
 import com.example.administrator.emailcontact.activity.ModifyContact;
 import com.example.administrator.emailcontact.model.ContactService;
 
@@ -100,7 +98,7 @@ public class RecyclerAdapter extends CursorAdapter {
             modify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ModifyContact.Instance(v.getContext(), id, R.string.search);
+                    ModifyContact.Instance(v.getContext(), id, ModifyContact.SEARCH_MODIFY);
                 }
             });
         }

@@ -26,7 +26,7 @@
             android:id="@id/android:empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/nodata" />
+            android:text="@string/no_data" />
     </LinearLayout>
 
     <RelativeLayout

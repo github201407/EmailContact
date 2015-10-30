@@ -47,8 +47,7 @@ public class ContactService {
         return rows;
     }
 
-    public int updateContact(int id, Contact contact) {
-        contact.setId(id);
+    public int updateContact(Contact contact) {
         ContentValues values = contact.getContentValues();
         Uri uri = ContentUris.withAppendedId(Contacts.CONTENT_URI, contact.getId());
         int rows = mContentResolver.update(uri, values, null, null);

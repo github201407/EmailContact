@@ -9,7 +9,7 @@
     <string name="displayName">姓名</string>
     <string name="id">编号</string>
 
-    <string name="title">联系人</string>
+    <string name="contact">联系人</string>
     <string name="all">全选</string>
     <string name="cancelAll">反选</string>
     <string name="quit">退出</string>
@@ -18,12 +18,17 @@
     <string name="update">更新列表</string>
     <string name="modify">编辑</string>
     <string name="delete">删除</string>
-    <string name="nodata">No data</string>
+    <string name="no_data">No data</string>
     <string name="search">搜索</string>
     <string name="back">返回</string>
     <string name="edt_hint">请输入关键词（至少两个字）</string>
-    <string name="contact">没有找到联系人</string>
+    <string name="none_contact">没有找到联系人</string>
     <string name="icon">icon</string>
-    <string name="modifycontact">编辑联系人</string>
+    <string name="show_contact">查看联系人</string>
+    <string name="modify_contact">编辑联系人</string>
+    <string name="add_contact">添加联系人</string>
+    <string name="modify_success">成功</string>
+    <string name="modify_fail">失败</string>
+    <string name="add">添加</string>
 
 </resources>

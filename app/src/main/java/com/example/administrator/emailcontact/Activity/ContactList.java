@@ -65,7 +65,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
         mTitle = (TextView) findViewById(R.id.title);
         mTitle.setText(R.string.search);
         mBack = (Button) findViewById(R.id.back);
-        mBack.setText(R.string.title);
+        mBack.setText(R.string.contact);
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +130,8 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        showMenuDialog(l);
+        //showMenuDialog(l);
+        ModifyContact.Instance(ContactList.this, (int)l, ModifyContact.SEARCH_SHOW);
     }
 
     AlertDialog mAlertDialog = null;
@@ -182,8 +183,8 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
                 String email = mEmail.getText().toString();
                 String number = mNumber.getText().toString();
                 String type = mType.getText().toString();
-                Contact mContact = new Contact(number, displayName, email, Integer.parseInt(type));
-                doUpdate(id, mContact);
+                Contact mContact = new Contact((int)id, number, displayName, email, Integer.parseInt(type));
+                doUpdate(mContact);
             }
         });
         mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -197,9 +198,9 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
             mAlertDialog.show();
     }
 
-    private void doUpdate(long id, Contact contact) {
+    private void doUpdate(Contact contact) {
         ContactService mService = new ContactService(this);
-        mService.updateContact((int) id, contact);
+        mService.updateContact(contact);
         setListAdapter(null);
         Cursor mCursor = mService.defaultQuery();
         mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);

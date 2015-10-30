@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/title"
+            android:text="@string/contact"
             android:textSize="18sp" />
 
         <Button
@@ -65,7 +65,6 @@
             android:drawableLeft="@mipmap/search"
             android:drawablePadding="10dp"
             android:hint="@string/edt_hint"
-            android:paddingLeft="10dp"
             android:singleLine="true" />
 
         <Button

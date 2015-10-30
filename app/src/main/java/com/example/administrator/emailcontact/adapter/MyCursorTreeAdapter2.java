@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CursorTreeAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,7 +34,7 @@ import java.util.Stack;
 /**
  * Created by Administrator on 2015/10/10.
  */
-public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
+public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements ExpandableListView.OnChildClickListener {
 
     private Context mCtx;
     private LayoutInflater mInflater;
@@ -149,6 +150,24 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
         mHolder.setCheckBox(mEmails.contains(email) ? true : false);
     }
 
+    /**
+     * Callback method to be invoked when a child in this expandable list has
+     * been clicked.
+     *
+     * @param parent        The ExpandableListView where the click happened
+     * @param v             The view within the expandable list/ListView that was clicked
+     * @param groupPosition The group position that contains the child that
+     *                      was clicked
+     * @param childPosition The child position within the group
+     * @param id            The row id of the child that was clicked
+     * @return True if the click was handled
+     */
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        ModifyContact.Instance(v.getContext(), (int)id, ModifyContact.CONTACT_SHOW);
+        return true;
+    }
+
     class ViewHolder {
         ImageView icon;
         int id;
@@ -196,7 +215,7 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
             modify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ModifyContact.Instance(v.getContext(), id, R.string.title);
+                    ModifyContact.Instance(v.getContext(), id, ModifyContact.CONTACT_MODIFY);
                 }
             });
         }

@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.GroupService;
-import com.example.administrator.emailcontact.util.CursorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +36,7 @@ public class ExpandList extends ExpandableListActivity {
 
     private List<String> mEmails = new ArrayList<String>();
     private Button mOK;
+    private Button mBack;
     private Button mModify;
     private Button mDelete;
     private EditText mSearchEdt;
@@ -86,7 +85,16 @@ public class ExpandList extends ExpandableListActivity {
 
     private void initActivity() {
         mTitle = (TextView) findViewById(R.id.title);
-        mTitle.setText(R.string.title);
+        mTitle.setText(R.string.contact);
+        mBack = (Button) findViewById(R.id.back);
+        mBack.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        mBack.setText(R.string.add);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ModifyContact.Instance(ExpandList.this, 0, ModifyContact.CONTACT_ADD);
+            }
+        });
         mOK = (Button) findViewById(R.id.ok);
         mSearchEdt = (EditText) findViewById(R.id.search_edt);
         mSearchEdt.setFocusable(false);
@@ -164,9 +172,9 @@ public class ExpandList extends ExpandableListActivity {
         reInitExpandlistView();
     }
 
-    private void doUpdate(long id, Contact contact) {
+    private void doUpdate(Contact contact) {
         ContactService mService = new ContactService(this);
-        mService.updateContact((int) id, contact);
+        mService.updateContact(contact);
         reInitExpandlistView();
     }
 
@@ -200,8 +208,8 @@ public class ExpandList extends ExpandableListActivity {
                 String email = mEmail.getText().toString();
                 String number = mNumber.getText().toString();
                 String type = mType.getText().toString();
-                Contact mContact = new Contact(number, displayName, email, Integer.parseInt(type));
-                doUpdate(checkedId, mContact);
+                Contact mContact = new Contact(checkedId, number, displayName, email, Integer.parseInt(type));
+                doUpdate(mContact);
             }
         });
         mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

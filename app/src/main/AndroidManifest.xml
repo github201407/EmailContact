@@ -20,7 +20,7 @@
 
         <activity
             android:name=".activity.ExpandList"
-            android:label="@string/title"
+            android:label="@string/contact"
             android:logo="@android:color/transparent"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name=".activity.ContactList"
-            android:label="@string/title"
+            android:label="@string/contact"
             android:logo="@android:color/transparent"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -42,7 +42,7 @@
         </activity>
         <activity
             android:name=".activity.ModifyContact"
-            android:label="@string/title"
+            android:label="@string/contact"
             android:logo="@android:color/transparent"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

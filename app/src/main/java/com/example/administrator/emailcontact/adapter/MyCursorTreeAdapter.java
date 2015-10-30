@@ -65,6 +65,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
             MyExpandableListView mListView = (MyExpandableListView) view;
             mListView.setGroupIndicator(null);
             MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, context, mEmails);
+            mListView.setOnChildClickListener(myCursorTreeAdapter2);
             mListView.setAdapter(myCursorTreeAdapter2);
         }
     }
