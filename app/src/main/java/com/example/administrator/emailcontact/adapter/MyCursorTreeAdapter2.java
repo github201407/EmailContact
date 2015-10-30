@@ -26,6 +26,7 @@ import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.provider.Contacts;
+import com.example.administrator.emailcontact.provider.Groups;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,9 +77,9 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements Expandabl
      */
     @Override
     protected Cursor getChildrenCursor(Cursor groupCursor) {
-        int contact_type_id = groupCursor.getInt(groupCursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
+        int contact_typeID = groupCursor.getInt(groupCursor.getColumnIndexOrThrow(Groups.ID));
         ContactService mContact = new ContactService(mCtx);
-        return mContact.findByTypeId(contact_type_id);
+        return mContact.findByTypeId(contact_typeID);
     }
 
     /**
@@ -108,7 +109,7 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements Expandabl
      */
     @Override
     protected void bindGroupView(View view, Context context, Cursor cursor, boolean isExpanded) {
-        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(GroupSQLiteHelper.GroupColumns._NAME)));
+        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(Groups.NAME)));
     }
 
     /**

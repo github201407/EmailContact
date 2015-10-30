@@ -1,13 +1,18 @@
 package com.example.administrator.emailcontact.model;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
+import com.example.administrator.emailcontact.provider.Contacts;
+import com.example.administrator.emailcontact.provider.Groups;
 import com.example.administrator.emailcontact.util.CursorUtil;
 
 /**
@@ -15,79 +20,72 @@ import com.example.administrator.emailcontact.util.CursorUtil;
  */
 public class GroupService {
     private GroupSQLiteHelper dbOpenHelper = null;
+    private ContentResolver mContentResolver = null;
 
     public GroupService(Context context) {
         if(dbOpenHelper == null)
             dbOpenHelper = new GroupSQLiteHelper(context);
+        mContentResolver = context.getContentResolver();
     }
 
     public long insert(int parent, int type, String groupName){
-        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(GroupSQLiteHelper.GroupColumns.PARENT, parent);
-        cv.put(GroupSQLiteHelper.GroupColumns.TYPE, type);
-        cv.put(GroupSQLiteHelper.GroupColumns._NAME, groupName);
-        long row = db.insert(GroupSQLiteHelper.TABLE_NAME, null, cv);
-        db.close();
+        cv.put(Groups.PARENT, parent);
+        cv.put(Groups.TYPE, type);
+        cv.put(Groups.NAME, groupName);
+        Uri uri = mContentResolver.insert(Groups.CONTENT_URI, cv);
+        String idStr = uri.getPathSegments().get(1);
+        long row = Long.valueOf(idStr);
         Log.e("sql", "insert:" + row);
         return row;
     }
 
-    public long insert(String groupName) {
+    public long insertParentNode(String groupName) {
         return insert(-1, 0, groupName);
     }
 
     public void delete(int id) {
-        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        String whereClause = GroupSQLiteHelper.GroupColumns._ID + " = ?";
-        String[] whereArgs = {Integer.toString(id)};
-        int rows = db.delete(GroupSQLiteHelper.TABLE_NAME, whereClause, whereArgs);
-        db.close();
+        Uri uri = ContentUris.withAppendedId(Groups.CONTENT_URI, id);
+        int rows = mContentResolver.delete(uri, null, null);
         Log.e("sql", "delete:" + rows);
     }
 
     public int update(int id, String groupName) {
-        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
-        String whereClause = GroupSQLiteHelper.GroupColumns._ID + " = ?";
-        String[] whereArgs = {Integer.toString(id)};
         ContentValues cv = new ContentValues();
-        cv.put(GroupSQLiteHelper.GroupColumns._NAME, groupName);
-        int result = db.update(GroupSQLiteHelper.TABLE_NAME, cv, whereClause, whereArgs);
-        db.close();
-        Log.e("sql", "update:" + result);
-        return result;
+        cv.put(Groups.NAME, groupName);
+        Uri uri = ContentUris.withAppendedId(Groups.CONTENT_URI, id);
+        int rows = mContentResolver.update(uri, cv, null, null);
+        Log.e("sql", "updateGroup id:" + rows);
+        return rows;
     }
 
     public Cursor query(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
-        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query(GroupSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, groupBy, having, orderBy);
-        CursorUtil.addCursor(cursor);
-        return cursor;
+        Cursor mCursor = mContentResolver.query(Groups.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        CursorUtil.addCursor(mCursor);
+        return mCursor;
     }
 
     public Cursor defaultQuery() {
         String[] columns = {
-                GroupSQLiteHelper.GroupColumns._ID,
-                GroupSQLiteHelper.GroupColumns.PARENT,
-                GroupSQLiteHelper.GroupColumns.ROOT,
-                GroupSQLiteHelper.GroupColumns.TYPE,
-                GroupSQLiteHelper.GroupColumns._NAME,
-                GroupSQLiteHelper.GroupColumns._CREATE_DATE};
+                Groups.ID,
+                Groups.PARENT,
+                Groups.ROOT,
+                Groups.TYPE,
+                Groups.NAME,
+                Groups.CREATE_DATE};
         return this.query(columns, null, null, null, null, null);
     }
 
     public Cursor queryParent(int parent) {
-        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         String[] columns = {
-                GroupSQLiteHelper.GroupColumns._ID,
-                GroupSQLiteHelper.GroupColumns.ROOT,
-                GroupSQLiteHelper.GroupColumns.TYPE,
-                GroupSQLiteHelper.GroupColumns._NAME,
-                GroupSQLiteHelper.GroupColumns._CREATE_DATE};
-        String selection = GroupSQLiteHelper.GroupColumns.PARENT + " = ?";
+                Groups.ID,
+                Groups.ROOT,
+                Groups.TYPE,
+                Groups.NAME,
+                Groups.CREATE_DATE};
+        String selection = Groups.PARENT + " = ?";
         String[] selectionArgs = {String.valueOf(parent)};
-        Cursor cursor = db.query(GroupSQLiteHelper.TABLE_NAME, columns, selection, selectionArgs, null, null, null);
-        CursorUtil.addCursor(cursor);
+        Cursor cursor = mContentResolver.query(Groups.CONTENT_URI, columns, selection, selectionArgs, Groups.DEFAULT_SORT_ORDER);
         if (cursor == null)
             return null;
         if (!cursor.moveToNext()) {
