@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.GroupService;
+import com.example.administrator.emailcontact.provider.Groups;
 import com.example.administrator.emailcontact.view.MyExpandableListView;
 
 import org.w3c.dom.Text;
@@ -35,7 +36,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     @Override
     protected Cursor getChildrenCursor(Cursor cursor) {
-        int child_parent = cursor.getInt(cursor.getColumnIndexOrThrow(GroupSQLiteHelper.GroupColumns._ID));
+        int child_parent = cursor.getInt(cursor.getColumnIndexOrThrow(Groups.ID));
         GroupService mGroupService = new GroupService(mCtx);
         Cursor mCursor = mGroupService.queryParent(child_parent);
         return mCursor;
@@ -49,7 +50,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     @Override
     protected void bindGroupView(View view, Context context, Cursor cursor, boolean b) {
-        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(GroupSQLiteHelper.GroupColumns._NAME)));
+        ((TextView) view).setText(cursor.getString(cursor.getColumnIndex(Groups.NAME)));
     }
 
     @Override

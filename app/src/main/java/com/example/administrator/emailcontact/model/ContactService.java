@@ -91,7 +91,6 @@ public class ContactService {
         String selection = Contacts.TYPE_ID + " = ?";
         String[] selectionArgs = {String.valueOf(typeId)};
         Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
-        CursorUtil.addCursor(cursor);
         if (cursor == null)
             return null;
         if (!cursor.moveToNext()) {

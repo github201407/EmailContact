@@ -62,7 +62,7 @@ public class ContactProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        Log.i(TAG, "ArticlesProvider.query: " + uri);
+        Log.i(TAG, "ContactProvider.query: " + uri);
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -115,6 +115,7 @@ public class ContactProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+        Log.i(TAG, "ContactProvider.insert: " + uri);
         if (uriMatcher.match(uri) != Contacts.ITEM) {
             throw new IllegalArgumentException("Error Uri: " + uri);
         }
@@ -134,6 +135,7 @@ public class ContactProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        Log.i(TAG, "ContactProvider.delete: " + uri);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int count;
 
@@ -159,6 +161,7 @@ public class ContactProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+        Log.i(TAG, "ContactProvider.update: " + uri);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int count;
 
@@ -194,7 +197,7 @@ public class ContactProvider extends ContentProvider {
     }
 
     private Bundle getItemCount() {
-        Log.i(TAG, "ArticlesProvider.getItemCount");
+        Log.i(TAG, "ContactProvider.getItemCount");
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select count(*) from " + Contacts.TABLE_NAME, null);
