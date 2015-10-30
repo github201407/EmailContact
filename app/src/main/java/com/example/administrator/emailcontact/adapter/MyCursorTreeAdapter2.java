@@ -2,17 +2,26 @@ package com.example.administrator.emailcontact.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CursorTreeAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.activity.ExpandList;
+import com.example.administrator.emailcontact.activity.ModifyContact;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -25,7 +34,7 @@ import java.util.Stack;
 /**
  * Created by Administrator on 2015/10/10.
  */
-public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
+public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements ExpandableListView.OnChildClickListener {
 
     private Context mCtx;
     private LayoutInflater mInflater;
@@ -84,7 +93,7 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
      */
     @Override
     protected View newGroupView(Context context, Cursor cursor, boolean isExpanded, ViewGroup parent) {
-        View view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, parent, false);
+        View view = mInflater.inflate(R.layout.expand_group_item, parent, false);
         return view;
     }
 
@@ -141,17 +150,40 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
         mHolder.setCheckBox(mEmails.contains(email) ? true : false);
     }
 
+    /**
+     * Callback method to be invoked when a child in this expandable list has
+     * been clicked.
+     *
+     * @param parent        The ExpandableListView where the click happened
+     * @param v             The view within the expandable list/ListView that was clicked
+     * @param groupPosition The group position that contains the child that
+     *                      was clicked
+     * @param childPosition The child position within the group
+     * @param id            The row id of the child that was clicked
+     * @return True if the click was handled
+     */
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        ModifyContact.Instance(v.getContext(), (int)id, ModifyContact.CONTACT_SHOW);
+        return true;
+    }
+
     class ViewHolder {
+        ImageView icon;
         int id;
         TextView text1;
         TextView text2;
         CheckBox checkBox;
+        Button delete, modify;
 
         public ViewHolder(View view) {
+            icon = (ImageView) view.findViewById(R.id.icon);
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-
+            delete = (Button) view.findViewById(R.id.item_delete);
+            modify = (Button) view.findViewById(R.id.item_modify);
+            setImage("");
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -171,6 +203,19 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
 
                     }
 
+                }
+            });
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ContactService mService = new ContactService(v.getContext());
+                    mService.delete(id);
+                }
+            });
+            modify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ModifyContact.Instance(v.getContext(), id, ModifyContact.CONTACT_MODIFY);
                 }
             });
         }
@@ -201,6 +246,17 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter {
             checkBox.setChecked(checked);
         }
 
+        public void setImage(String url){
+            Glide.with(mCtx).load(url).asBitmap().centerCrop().placeholder(R.mipmap.head_man).animate(android.R.anim.fade_in).into(new BitmapImageViewTarget(icon) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(mCtx.getResources(), resource);
+                    circularBitmapDrawable.setCornerRadius(50);
+                    icon.setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        }
 
     }
 }

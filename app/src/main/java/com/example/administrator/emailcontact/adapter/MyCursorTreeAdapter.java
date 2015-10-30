@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.CursorTreeAdapter;
 import android.widget.TextView;
 
+import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.model.GroupService;
 import com.example.administrator.emailcontact.view.MyExpandableListView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
 
     @Override
     protected View newGroupView(Context context, Cursor cursor, boolean b, ViewGroup viewGroup) {
-        View view = mInflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
+        View view = mInflater.inflate(R.layout.expand_group_item, viewGroup, false);
         return view;
     }
 
@@ -60,7 +63,9 @@ public class MyCursorTreeAdapter extends CursorTreeAdapter {
     protected void bindChildView(View view, Context context, Cursor cursor, boolean b) {
         if (b) {
             MyExpandableListView mListView = (MyExpandableListView) view;
+            mListView.setGroupIndicator(null);
             MyCursorTreeAdapter2 myCursorTreeAdapter2 = new MyCursorTreeAdapter2(cursor, context, mEmails);
+            mListView.setOnChildClickListener(myCursorTreeAdapter2);
             mListView.setAdapter(myCursorTreeAdapter2);
         }
     }

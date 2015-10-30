@@ -5,10 +5,12 @@ import android.content.ContentValues;
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2015/9/18.
  */
-public class Contact {
+public class Contact implements Serializable{
     int id;
     String number;
     String display_name;
