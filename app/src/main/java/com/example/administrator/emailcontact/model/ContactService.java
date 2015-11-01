@@ -5,11 +5,10 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 import com.example.administrator.emailcontact.util.CursorUtil;
 
@@ -100,7 +99,7 @@ public class ContactService {
         return cursor;
     }
 
-    public Cursor search(String string){
+    public Cursor search(String string) {
         string = "%" + string + "%";
         String[] columns = {
                 Contacts.ID,
@@ -119,4 +118,8 @@ public class ContactService {
         return cursor;
     }
 
+    public int getCursorCount() {
+        Bundle mBundle = mContentResolver.call(Contacts.CONTENT_URI, Contacts.METHOD_GET_ITEM_COUNT, null, null);
+        return mBundle != null ? mBundle.getInt(Contacts.KEY_ITEM_COUNT, 0) : 0;
+    }
 }

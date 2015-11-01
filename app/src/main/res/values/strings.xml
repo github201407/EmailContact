@@ -32,6 +32,9 @@
     <string name="add">添加</string>
     <string name="add_group">添加分组</string>
     <string name="group_name">群组名</string>
+    <string name="group_parent">上级组别</string>
+    <string name="group_top">默认：第一级</string>
+    <string name="hint_input_group_name">请填写群组名！</string>
 
     <string-array name="array_groups">
         <item>dev1</item>

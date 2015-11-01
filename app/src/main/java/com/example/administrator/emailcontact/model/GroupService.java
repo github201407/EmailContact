@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
@@ -93,6 +94,11 @@ public class GroupService {
             return null;
         }
         return cursor;
+    }
+
+    public int getCursorCount(){
+        Bundle mBundle = mContentResolver.call(Groups.CONTENT_URI,Groups.METHOD_GET_ITEM_COUNT,null,null);
+        return mBundle != null ? mBundle.getInt(Groups.KEY_ITEM_COUNT, 0) : 0;
     }
 
 }

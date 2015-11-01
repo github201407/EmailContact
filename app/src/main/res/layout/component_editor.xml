@@ -140,6 +140,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_below="@+id/type"
             android:layout_marginTop="10dp"
+            android:layout_alignParentRight="true"
             android:layout_toEndOf="@+id/spinner"
             android:layout_toRightOf="@+id/spinner"
             android:background="@android:color/transparent"

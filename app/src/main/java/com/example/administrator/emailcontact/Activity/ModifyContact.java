@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
@@ -43,6 +42,7 @@ public class ModifyContact extends Activity {
     private EditText mId, mDisplayName, mEmail, mPhone, mType;
     private Spinner mSpinner;
     private Button mAddGroup;
+    private int selectedItem = 0;
 
     public static void Instance(Context context, int id, int from) {
         Intent intent = new Intent(context, ModifyContact.class);
@@ -82,9 +82,15 @@ public class ModifyContact extends Activity {
                 AddGroup.Instance(view.getContext());
             }
         });
-        initSpinner();
+//        initSpinner();
         initTitleBar();
         initContactInfo();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initSpinner();
     }
 
     private void initSpinner() {
@@ -96,6 +102,7 @@ public class ModifyContact extends Activity {
 //                R.array.array_groups, android.R.layout.simple_spinner_item);
         mAdatper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(mAdatper);
+        mSpinner.setSelection(selectedItem);
     }
 
     private void initTitleBar() {
@@ -236,4 +243,13 @@ public class ModifyContact extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Groups.REQUEST_CREATE_GROUP)
+            if(resultCode == RESULT_OK) {
+                GroupService mService = new GroupService(ModifyContact.this);
+                selectedItem = mService.getCursorCount() -1;
+            }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

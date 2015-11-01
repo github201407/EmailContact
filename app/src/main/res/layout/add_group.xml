@@ -10,32 +10,53 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin">
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
         <TextView
             android:id="@+id/name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/group_name"
             android:layout_alignBaseline="@+id/group_name"
             android:layout_alignBottom="@+id/group_name"
-            android:textSize="16sp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:text="@string/group_name"
+            android:textSize="16sp" />
 
         <EditText
+            android:id="@+id/group_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:id="@+id/group_name"
-            android:layout_toRightOf="@+id/name_label"
-            android:layout_toEndOf="@+id/name_label"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/name_label"
+            android:layout_toRightOf="@+id/name_label"
             android:background="@drawable/edit_bg"
-            android:layout_marginStart="15dp" />
+            android:inputType="text" />
+
+        <TextView
+            android:id="@+id/group_paren_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/group_parent"
+            android:layout_alignLeft="@+id/name_label"
+            android:layout_alignTop="@+id/group_parent"
+            android:gravity="center"
+            android:text="@string/group_parent"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/group_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/group_name"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/group_paren_label"
+            android:layout_toRightOf="@+id/group_paren_label" />
 
 
     </RelativeLayout>
