@@ -30,5 +30,13 @@
     <string name="modify_success">成功</string>
     <string name="modify_fail">失败</string>
     <string name="add">添加</string>
+    <string name="add_group">添加分组</string>
+    <string name="group_name">群组名</string>
+
+    <string-array name="array_groups">
+        <item>dev1</item>
+        <item>dev2</item>
+        <item>dev3</item>
+    </string-array>
 
 </resources>

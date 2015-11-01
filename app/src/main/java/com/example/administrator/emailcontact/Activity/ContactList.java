@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.RecyclerAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
+import com.example.administrator.emailcontact.provider.Contacts;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -42,14 +44,14 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     private Button mSearchBtn;
     private ContactService mService;
 
-    public static void InstanceList(Context context){
-        Intent intent = new Intent(context,ContactList.class);
+    public static void InstanceList(Context context) {
+        Intent intent = new Intent(context, ContactList.class);
         Bundle bundle;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
             context.startActivity(intent, bundle);
-            ((Activity)context).finish();
-        }else {
+            ((Activity) context).finish();
+        } else {
             context.startActivity(intent);
         }
     }
@@ -131,7 +133,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         //showMenuDialog(l);
-        ModifyContact.Instance(ContactList.this, (int)l, ModifyContact.SEARCH_SHOW);
+        ModifyContact.Instance(ContactList.this, (int) l, ModifyContact.SEARCH_SHOW);
     }
 
     AlertDialog mAlertDialog = null;
@@ -183,7 +185,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
                 String email = mEmail.getText().toString();
                 String number = mNumber.getText().toString();
                 String type = mType.getText().toString();
-                Contact mContact = new Contact((int)id, number, displayName, email, Integer.parseInt(type));
+                Contact mContact = new Contact((int) id, number, displayName, email, Integer.parseInt(type));
                 doUpdate(mContact);
             }
         });
@@ -213,7 +215,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
             Toast.makeText(ContactList.this, str, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.putExtra("email", str);
-            setResult(10, intent);
+            setResult(Contacts.CONTACT_PICK, intent);
         }
         finish();
     }

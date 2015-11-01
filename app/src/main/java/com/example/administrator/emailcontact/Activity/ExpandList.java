@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.GroupService;
+import com.example.administrator.emailcontact.provider.Contacts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +50,11 @@ public class ExpandList extends ExpandableListActivity {
     public static void InstanceList(Context context){
         Intent intent = new Intent(context,ExpandList.class);
         Bundle bundle;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
             context.startActivity(intent, bundle);
-            ((Activity)context).finish();
-        }else {
+            ((Activity) context).finish();
+        } else {
             context.startActivity(intent);
         }
     }
@@ -230,7 +232,7 @@ public class ExpandList extends ExpandableListActivity {
                 mBuilder.append(email + ",");
             String emails = mBuilder.toString();
             Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
-            setResult(10, getIntent().putExtra("email", emails));
+            setResult(Contacts.CONTACT_PICK, getIntent().putExtra("email", emails));
         }
         finish();
     }

@@ -1,5 +1,10 @@
 <resources>
 
+    <style name="FadeInAndOutAnimation.Activity" parent="@android:style/Animation.Activity">
+      <!--  <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>-->
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!--<item name="android:windowBackground">@android:color/white</item>-->
@@ -8,12 +13,22 @@
     <style name="AppTheme.NoActionBar">
         <item name="android:windowNoTitle">true</item>
     </style>
+    <style name="AppTheme.NoActionBar.Animation">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/FadeInAndOutAnimation.Activity</item>
+    </style>
     <style name="AppTheme.AppBarOverlay"/>
     <style name="AppTheme.PopupOverlay"/>
 
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/ic_launcher</item>
+    </style>
+
+    <style name="Spinner_Style">
+        <item name="android:background">@drawable/edit_bg</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
     </style>
 
 </resources>

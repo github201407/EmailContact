@@ -49,4 +49,6 @@ public class Contacts {
             + Contacts.NUMBER + " TEXT, "
             + Contacts.EMAIL + " TEXT, "
             + Contacts.TYPE_ID + " INTEGER);";
+    
+    public final static int CONTACT_PICK = 10;
 }
