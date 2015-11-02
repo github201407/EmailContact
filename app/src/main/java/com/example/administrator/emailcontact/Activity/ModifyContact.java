@@ -250,9 +250,9 @@ public class ModifyContact extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Groups.REQUEST_CREATE_GROUP)
             if (resultCode == RESULT_OK) {
-                if(data != null){
+                if (data != null) {
                     initSpinner();
-                    int groupId = (int)data.getLongExtra(Groups.KEY_GROUP_ID, 0);
+                    int groupId = (int) data.getLongExtra(Groups.KEY_GROUP_ID_LONG, 0);
                     mSpinner.setSelection(mPosition2Id.containsKey(groupId) ? mPosition2Id.get(groupId) : 0);
                 }
             }

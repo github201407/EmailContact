@@ -42,10 +42,10 @@ public class AddGroup extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
 //            context.startActivity(intent, bundle);
-            ((Activity)context).startActivityForResult(intent, Groups.REQUEST_CREATE_GROUP, bundle);
+            ((Activity) context).startActivityForResult(intent, Groups.REQUEST_CREATE_GROUP, bundle);
         } else {
 //            context.startActivity(intent);
-            ((Activity)context).startActivityForResult(intent, Groups.REQUEST_CREATE_GROUP);
+            ((Activity) context).startActivityForResult(intent, Groups.REQUEST_CREATE_GROUP);
         }
     }
 
@@ -107,7 +107,7 @@ public class AddGroup extends Activity {
     }
 
     private void insertParentNode() {
-        if(TextUtils.isEmpty(mGroupName.getText().toString())){
+        if (TextUtils.isEmpty(mGroupName.getText().toString())) {
             Toast.makeText(AddGroup.this, R.string.hint_input_group_name, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -117,7 +117,7 @@ public class AddGroup extends Activity {
         if (id > 0) {
             Toast.makeText(AddGroup.this, R.string.modify_success, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
-            intent.putExtra(Groups.KEY_GROUP_ID, id);
+            intent.putExtra(Groups.KEY_GROUP_ID_LONG, id);
             setResult(RESULT_OK, intent);
             activityFinish();
         } else {
