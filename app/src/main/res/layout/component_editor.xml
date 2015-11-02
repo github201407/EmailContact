@@ -106,46 +106,43 @@
             android:id="@+id/type_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/type"
-            android:layout_alignBottom="@+id/type"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignBaseline="@+id/type_container"
+            android:layout_alignBottom="@+id/type_container"
+            android:layout_alignRight="@+id/id_label"
+            android:layout_alignTop="@+id/type_container"
             android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@+id/type_container"
+            android:gravity="center"
             android:text="@string/type"
             android:textSize="@dimen/modify_label_text_size" />
 
-        <EditText
-            android:id="@+id/type"
+        <LinearLayout
+            android:id="@+id/type_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
+            android:layout_alignLeft="@+id/id"
             android:layout_below="@+id/number"
-            android:layout_marginTop="@dimen/modify_margin"
-            android:layout_toEndOf="@+id/id_label"
-            android:layout_toRightOf="@+id/id_label"
-            android:background="@drawable/edit_bg" />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_below="@+id/type"
-            android:layout_marginTop="10dp" />
-
-        <Button
-            android:id="@+id/add_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_below="@+id/type"
             android:layout_marginTop="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_toEndOf="@+id/spinner"
-            android:layout_toRightOf="@+id/spinner"
-            android:background="@android:color/transparent"
-            android:text="@string/add_group"
-            android:textColor="@drawable/add_group_text_color" />
+            android:layout_toRightOf="@+id/type_label"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <Button
+                android:id="@+id/add_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:text="@string/add_group"
+                android:textColor="@color/button_text_color" />
+        </LinearLayout>
     </RelativeLayout>
 </merge>

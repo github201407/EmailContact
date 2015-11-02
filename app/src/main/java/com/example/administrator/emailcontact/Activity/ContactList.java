@@ -2,10 +2,8 @@ package com.example.administrator.emailcontact.activity;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -14,7 +12,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.RecyclerAdapter;
-import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.provider.Contacts;
 
@@ -132,81 +128,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //showMenuDialog(l);
         ModifyContact.Instance(ContactList.this, (int) l, ModifyContact.SEARCH_SHOW);
-    }
-
-    AlertDialog mAlertDialog = null;
-
-    private void showMenuDialog(final long id) {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ContactList.this);
-        mBuilder.setItems(new CharSequence[]{"Delete", "Modify"}, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch (i) {
-                    case 0:
-                        doDelete(id);
-                        break;
-                    case 1:
-                        doModify(id);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-        mAlertDialog = mBuilder.create();
-        if (!isFinishing())
-            mAlertDialog.show();
-    }
-
-    private void doModify(final long id) {
-        ContactService mService = new ContactService(this);
-        Contact contact = mService.find((int) id);
-        View view = LayoutInflater.from(ContactList.this).inflate(R.layout.edit_dialog, null);
-        EditText mId = (EditText) view.findViewById(R.id.id);
-        mId.setEnabled(false);
-        final EditText mDisplayName = (EditText) view.findViewById(R.id.displayName);
-        final EditText mEmail = (EditText) view.findViewById(R.id.email);
-        final EditText mNumber = (EditText) view.findViewById(R.id.number);
-        final EditText mType = (EditText) view.findViewById(R.id.type);
-        mId.setText(String.valueOf(id));
-        mDisplayName.setText(contact.getDisplay_name());
-        mEmail.setText(contact.getEmail());
-        mNumber.setText(contact.getNumber());
-        mType.setText("" + contact.getType());
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ContactList.this);
-        mBuilder.setView(view);
-        mBuilder.setTitle("Edit..." + id);
-        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String displayName = mDisplayName.getText().toString();
-                String email = mEmail.getText().toString();
-                String number = mNumber.getText().toString();
-                String type = mType.getText().toString();
-                Contact mContact = new Contact((int) id, number, displayName, email, Integer.parseInt(type));
-                doUpdate(mContact);
-            }
-        });
-        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        mAlertDialog = mBuilder.create();
-        if (!isFinishing())
-            mAlertDialog.show();
-    }
-
-    private void doUpdate(Contact contact) {
-        ContactService mService = new ContactService(this);
-        mService.updateContact(contact);
-        setListAdapter(null);
-        Cursor mCursor = mService.defaultQuery();
-        mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);
-        setListAdapter(mAdapter);
     }
 
     private void doOK() {
@@ -220,19 +142,4 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
         finish();
     }
 
-    private void doDelete(long id) {
-        ContactService mService = new ContactService(ContactList.this);
-        mService.delete((int) id);
-        setListAdapter(null);
-        Cursor mCursor = mService.defaultQuery();
-        mAdapter = new RecyclerAdapter(ContactList.this, mCursor, true);
-        setListAdapter(mAdapter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mAlertDialog != null && mAlertDialog.isShowing())
-            mAlertDialog.dismiss();
-    }
 }

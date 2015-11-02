@@ -2,17 +2,14 @@ package com.example.administrator.emailcontact.activity;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,8 +44,8 @@ public class ExpandList extends ExpandableListActivity {
     private MyCursorTreeAdapter mAdapter;
     private TextView mTitle;
 
-    public static void InstanceList(Context context){
-        Intent intent = new Intent(context,ExpandList.class);
+    public static void InstanceList(Context context) {
+        Intent intent = new Intent(context, ExpandList.class);
         Bundle bundle;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
@@ -106,7 +103,7 @@ public class ExpandList extends ExpandableListActivity {
         mModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doModify();
+//                doModify();
             }
         });
         mOK.setOnClickListener(new View.OnClickListener() {
@@ -180,51 +177,6 @@ public class ExpandList extends ExpandableListActivity {
         reInitExpandlistView();
     }
 
-    AlertDialog mAlertDialog = null;
-
-    private void doModify() {
-        if (checkedId == 0)
-            return;
-        ContactService mService = new ContactService(this);
-        Contact contact = mService.find(checkedId);
-        View view = LayoutInflater.from(ExpandList.this).inflate(R.layout.edit_dialog, null);
-        EditText mId = (EditText) view.findViewById(R.id.id);
-        mId.setEnabled(false);
-        final EditText mDisplayName = (EditText) view.findViewById(R.id.displayName);
-        final EditText mEmail = (EditText) view.findViewById(R.id.email);
-        final EditText mNumber = (EditText) view.findViewById(R.id.number);
-        final EditText mType = (EditText) view.findViewById(R.id.type);
-        mId.setText(String.valueOf(checkedId));
-        mDisplayName.setText(contact.getDisplay_name());
-        mEmail.setText(contact.getEmail());
-        mNumber.setText(contact.getNumber());
-        mType.setText("" + contact.getType());
-
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExpandList.this);
-        mBuilder.setView(view);
-        mBuilder.setTitle("Edit:" + checkedId);
-        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String displayName = mDisplayName.getText().toString();
-                String email = mEmail.getText().toString();
-                String number = mNumber.getText().toString();
-                String type = mType.getText().toString();
-                Contact mContact = new Contact(checkedId, number, displayName, email, Integer.parseInt(type));
-                doUpdate(mContact);
-            }
-        });
-        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        mAlertDialog = mBuilder.create();
-        if (!isFinishing())
-            mAlertDialog.show();
-    }
-
     private void doOK() {
         StringBuilder mBuilder = new StringBuilder();
         if (mEmails.size() > 0) {
@@ -240,8 +192,6 @@ public class ExpandList extends ExpandableListActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAlertDialog != null && mAlertDialog.isShowing())
-            mAlertDialog.dismiss();
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
     }
