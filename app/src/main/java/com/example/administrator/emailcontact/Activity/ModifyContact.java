@@ -177,7 +177,7 @@ public class ModifyContact extends Activity {
     private void addDataByContact(Contact mContact) {
         mId.setText(String.valueOf(mContact.getId()));
         mId.setEnabled(false);
-        mDisplayName.setText(mContact.getDisplay_name());
+        mDisplayName.setText(mContact.getName());
         mEmail.setText(mContact.getEmail());
         mPhone.setText(mContact.getNumber());
         mSpinner.setSelection(mPosition2Id.containsKey(mContact.getType()) ? mPosition2Id.get(mContact.getType()) : 0);

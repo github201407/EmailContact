@@ -5,16 +5,16 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 import com.example.administrator.emailcontact.provider.Groups;
 import com.example.administrator.emailcontact.util.CursorUtil;
+
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2015/10/8.
@@ -77,6 +77,23 @@ public class GroupService {
         return this.query(columns, null, null, null, null, null);
     }
 
+    public ArrayList<Group> queryTopParent(int parent) {
+        ArrayList<Group> groups = new ArrayList<>();
+        Cursor mCursor =  queryParent(-1);
+        if (mCursor == null)
+            return groups;
+        Group group;
+        while (mCursor.moveToNext()){
+            int id = mCursor.getInt(0);
+            int root = mCursor.getInt(1);
+            int type = mCursor.getInt(2);
+            String name = mCursor.getString(3);
+            group = new Group(id, parent, type, root, name);
+            groups.add(group);
+        }
+        mCursor.close();
+        return groups;
+    }
     public Cursor queryParent(int parent) {
         String[] columns = {
                 Groups.ID,

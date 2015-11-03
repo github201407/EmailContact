@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
+import com.example.administrator.emailcontact.adapter.GroupExpandAdapter;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -43,6 +44,7 @@ public class ExpandList extends ExpandableListActivity {
     public static int checkedId = 0;
     private MyCursorTreeAdapter mAdapter;
     private TextView mTitle;
+    private GroupExpandAdapter mAdapter2;
 
     public static void InstanceList(Context context) {
         Intent intent = new Intent(context, ExpandList.class);
@@ -293,8 +295,9 @@ public class ExpandList extends ExpandableListActivity {
         super.onResume();
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
-        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-        setListAdapter(mAdapter);
+//        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
+        mAdapter2 = new GroupExpandAdapter(ExpandList.this);
+        setListAdapter(mAdapter2);
     }
 
     @Override

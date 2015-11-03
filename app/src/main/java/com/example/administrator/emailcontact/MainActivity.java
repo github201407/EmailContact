@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.administrator.emailcontact.activity.ContactList;
 import com.example.administrator.emailcontact.activity.ExpandList;
@@ -246,7 +245,7 @@ public class MainActivity extends Activity{
         Contact mContact = mService.find(id);
         if (mContact == null)
             return;
-        mDisplayName.setText(mContact.getDisplay_name());
+        mDisplayName.setText(mContact.getName());
         mEmail.setText(mContact.getEmail());
         mNumber.setText(mContact.getNumber());
 //        mType.setText(mContact.getType());

@@ -12,6 +12,8 @@ import android.util.Log;
 import com.example.administrator.emailcontact.provider.Contacts;
 import com.example.administrator.emailcontact.util.CursorUtil;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2015/9/21.
  */
@@ -90,13 +92,38 @@ public class ContactService {
         String selection = Contacts.TYPE_ID + " = ?";
         String[] selectionArgs = {String.valueOf(typeId)};
         Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
-        if (cursor == null)
+        if (cursor == null) {
             return null;
-        if (!cursor.moveToNext()) {
+        } else if (!cursor.moveToFirst()) {
             cursor.close();
             return null;
         }
         return cursor;
+    }
+
+    public ArrayList<Contact> queryContactByGroupId(int groupId){
+        ArrayList<Contact> mArray = new ArrayList<>();
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER};
+        String selection = Contacts.TYPE_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(groupId)};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return mArray;
+        Contact contact;
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String number = cursor.getString(3);
+            String email = cursor.getString(2);
+            contact = new Contact(id, number, display_Name, email, groupId);
+            mArray.add(contact);
+        }
+        cursor.close();
+        return mArray;
     }
 
     public Cursor search(String string) {

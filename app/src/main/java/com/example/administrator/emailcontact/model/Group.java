@@ -14,6 +14,14 @@ public class Group {
     int root;
     String name;
 
+    public Group(int id, int parent, int type, int root, String name) {
+        this.id = id;
+        this.parent = parent;
+        this.type = type;
+        this.root = root;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
