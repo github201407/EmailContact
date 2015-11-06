@@ -79,7 +79,7 @@ public class GroupService {
 
     public ArrayList<Group> queryTopParent(int parent) {
         ArrayList<Group> groups = new ArrayList<>();
-        Cursor mCursor =  queryParent(-1);
+        Cursor mCursor =  queryParent(parent);
         if (mCursor == null)
             return groups;
         Group group;

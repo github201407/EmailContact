@@ -2,37 +2,47 @@ package com.example.administrator.emailcontact.activity;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.ExpandableListActivity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
+import com.example.administrator.emailcontact.adapter.ContactAdapter;
 import com.example.administrator.emailcontact.adapter.GroupExpandAdapter;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
+import com.example.administrator.emailcontact.model.ContactItem;
 import com.example.administrator.emailcontact.model.ContactService;
+import com.example.administrator.emailcontact.model.Group;
 import com.example.administrator.emailcontact.model.GroupService;
 import com.example.administrator.emailcontact.provider.Contacts;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2015/10/8.
  */
-public class ExpandList extends ExpandableListActivity {
+public class ExpandList extends ListActivity {
 
     private List<String> mEmails = new ArrayList<String>();
     private Button mOK;
@@ -45,6 +55,7 @@ public class ExpandList extends ExpandableListActivity {
     private MyCursorTreeAdapter mAdapter;
     private TextView mTitle;
     private GroupExpandAdapter mAdapter2;
+    private ContactAdapter adapter;
 
     public static void InstanceList(Context context) {
         Intent intent = new Intent(context, ExpandList.class);
@@ -80,6 +91,7 @@ public class ExpandList extends ExpandableListActivity {
 //                new int[]{android.R.id.text1});
 //        setListAdapter(mAdapter);
 
+        mCurrent = -1;
         initActivity();
 
     }
@@ -162,7 +174,7 @@ public class ExpandList extends ExpandableListActivity {
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
         MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-        setListAdapter(mAdapter);
+//        setListAdapter(mAdapter);
     }
 
     private void doDelete() {
@@ -196,6 +208,7 @@ public class ExpandList extends ExpandableListActivity {
         super.onPause();
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
+        mPositions.put(mCurrent, getListView().getFirstVisiblePosition());
     }
 
     private ProgressDialog dialog;
@@ -290,14 +303,19 @@ public class ExpandList extends ExpandableListActivity {
         super.onDestroy();
     }
 
+    private Handler mHandler;
+    private Runnable mUpdateFiles;
+
     @Override
     protected void onResume() {
         super.onResume();
-        GroupService mGroup = new GroupService(this);
-        Cursor mCursor = mGroup.queryParent(-1);
-//        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-        mAdapter2 = new GroupExpandAdapter(ExpandList.this);
-        setListAdapter(mAdapter2);
+//        GroupService mGroup = new GroupService(this);
+//        Cursor mCursor = mGroup.queryParent(-1);
+////        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
+//        mAdapter2 = new GroupExpandAdapter(ExpandList.this);
+//        setListAdapter(mAdapter2);
+
+        initAdapterData();
     }
 
     @Override
@@ -307,4 +325,103 @@ public class ExpandList extends ExpandableListActivity {
             mAdapter.changeCursor(null);
         mAdapter = null;
     }
+
+    private GroupService mGService;
+    private ContactService mCService;
+    static private Map<Integer, Integer> mPositions = new HashMap<>();
+    private int mParent;
+    private int mCurrent;
+    private ArrayList<Group> mGroups;
+    private ArrayList<Contact> mContacts;
+
+    private void initAdapterData(){
+        // Create a list adapter...
+        adapter = new ContactAdapter(getLayoutInflater());
+        setListAdapter(adapter);
+
+        mGService = new GroupService(this);
+        mCService = new ContactService(this);
+
+        // ...that is updated dynamically when files are scanned
+        mHandler = new Handler();
+        mUpdateFiles = new Runnable() {
+            public void run() {
+//                mChild = 0;
+                mGroups = mGService.queryTopParent(mCurrent);
+                mContacts = mCService.queryContactByGroupId(mCurrent == -1 ? 0 : mCurrent);
+
+                if(mGroups.size() > 0) {
+                    mParent = mGroups.get(0).getParent();
+                } else if (mContacts.size() > 0)
+                    mParent = mContacts.get(0).getType();
+
+                Collections.sort(mGroups, new Comparator<Group>() {
+                    @Override
+                    public int compare(Group lhs, Group rhs) {
+                        return lhs.getName().compareToIgnoreCase(rhs.getName());
+                    }
+                });
+
+                Collections.sort(mContacts, new Comparator<Contact>() {
+                    @Override
+                    public int compare(Contact lhs, Contact rhs) {
+                        return lhs.getName().compareToIgnoreCase(rhs.getName());
+                    }
+                });
+
+                adapter.clear();
+                if (mParent != -1)
+                    adapter.add(new ContactItem(ContactItem.Type.PARENT, getString(R.string.app_name)));
+                for (Group group : mGroups)
+                    adapter.add(new ContactItem(ContactItem.Type.GROUP, group.getName()));
+                for (Contact contact : mContacts)
+                    adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName()));
+
+                lastPosition();
+            }
+        };
+
+        // Start initial file scan...
+        mHandler.post(mUpdateFiles);
+
+//        // ...and observe the directory and scan files upon changes.
+//        FileObserver observer = new FileObserver(mDirectory.getPath(), FileObserver.CREATE | FileObserver.DELETE) {
+//            public void onEvent(int event, String path) {
+//                mHandler.post(mUpdateFiles);
+//            }
+//        };
+//        observer.startWatching();
+    }
+
+    private void lastPosition() {
+        if (mPositions.containsKey(mCurrent))
+            getListView().setSelection(mPositions.get(mCurrent));
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        int firstVisiblePosition = getListView().getFirstVisiblePosition();
+        mPositions.put(mCurrent, firstVisiblePosition);
+
+        if (position < (mParent == -1 ? 0 : 1)) {
+            mCurrent = mParent;
+            mHandler.post(mUpdateFiles);
+            return;
+        }
+
+        position -= (mParent == -1 ? 0 : 1);
+
+        if (position < mGroups.size()) {
+            mCurrent = mGroups.get(position).getId();
+            mHandler.post(mUpdateFiles);
+            return;
+        }
+
+        position -= mGroups.size();
+
+        int contactId = mContacts.get(position).getId();
+        ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
+    }
+
 }
