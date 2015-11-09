@@ -17,6 +17,10 @@ public class Contact implements Serializable{
     int type;
     String imageUrl;
 
+    public Contact(){
+
+    }
+
     public Contact(int id, String number, String name, String email, int type, String imageUrl) {
         this.id = id;
         this.number = number;
@@ -99,5 +103,17 @@ public class Contact implements Serializable{
                 contentValues.getAsString(Contacts.EMAIL),
                 contentValues.getAsInteger(Contacts.TYPE_ID)
         );
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", type=" + type +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
     }
 }

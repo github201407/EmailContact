@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.ContactAdapter;
 import com.example.administrator.emailcontact.adapter.GroupExpandAdapter;
@@ -29,8 +31,16 @@ import com.example.administrator.emailcontact.model.ContactItem;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.Group;
 import com.example.administrator.emailcontact.model.GroupService;
+import com.example.administrator.emailcontact.model.JSONContact;
 import com.example.administrator.emailcontact.provider.Contacts;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,7 +54,8 @@ import java.util.Stack;
  */
 public class ExpandList extends ListActivity {
 
-    private List<String> mEmails = new ArrayList<String>();
+    private static final String TAG = "ExpandList";
+    private List<String> mEmails = new ArrayList<>();
     private Button mOK;
     private Button mBack;
     private Button mModify;
@@ -214,6 +225,7 @@ public class ExpandList extends ListActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             doBackWork();
+//            downloadContact();
             while (rate < 100) {
                 rate += 10;
                 publishProgress(rate);
@@ -235,6 +247,8 @@ public class ExpandList extends ListActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             dialog.dismiss();
+            mCurrent = -1;
+            mHandler.post(mUpdateFiles);
         }
     }
 
@@ -337,7 +351,7 @@ public class ExpandList extends ListActivity {
 
                 adapter.clear();
                 if (mStack.size() > 0)
-                    adapter.add(new ContactItem(ContactItem.Type.PARENT, mStackName.peek(), ""));
+                    adapter.add(new ContactItem(ContactItem.Type.PARENT, getStack(), ""));
                 for (Group group : mGroups)
                     adapter.add(new ContactItem(ContactItem.Type.GROUP, group.getName(), group));
                 for (Contact contact : mContacts)
@@ -384,6 +398,85 @@ public class ExpandList extends ListActivity {
 
         int contactId = mContacts.get(position).getId();
         ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
+    }
+
+    public ArrayList<Contact> parseJson(String json){
+        String json1 = "{'contacts':[{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
+                "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
+                "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}]}";
+        JSONContact contacts = JSON.parseObject(json1, JSONContact.class);
+        ArrayList<Contact> mArrays = contacts.getContacts();
+        for(Contact contact: mArrays)
+            Log.e(TAG, contact.toString());
+        return mArrays;
+    }
+
+    public void downloadContact(){
+        ContactService mService = new ContactService(this);
+        String url = "http://jensvn.duapp.com/jsonServlet?action=download&dataType=json";
+        try {
+            String content = downloadUrl(url);
+            Log.e(TAG, content);
+            ArrayList<Contact> mContacts = parseJson(content);
+            for (Contact contact : mContacts)
+                mService.insert(contact);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String downloadUrl(String myurl) throws IOException {
+        InputStream is = null;
+        // Only display the first 500 characters of the retrieved
+        // web page content.
+        int len = 500;
+
+        try {
+            URL url = new URL(myurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            // Starts the query
+            conn.connect();
+            int response = conn.getResponseCode();
+            Log.d(TAG, "The response is: " + response);
+            String contentAsString = "";
+            if(response == 200){
+                is = conn.getInputStream();
+                contentAsString = readIt(is);
+            }
+
+            // Convert the InputStream into a string
+            return contentAsString;
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+    }
+
+    public String readIt(InputStream stream) throws IOException {
+        Reader reader = new InputStreamReader(stream, "UTF-8");
+        StringBuilder mBuilder = new StringBuilder();
+        char[] buffer = new char[1024];
+        while (reader.read(buffer) != -1){
+            mBuilder.append(buffer);
+        }
+        reader.close();
+        return mBuilder.toString();
+    }
+
+    private String getStack(){
+        Object[] stacks = mStackName.toArray();
+        StringBuilder builder = new StringBuilder();
+        for(Object object: stacks)
+            builder.append(object + "/");
+        return builder.toString();
     }
 
 }
