@@ -144,5 +144,17 @@
                 android:text="@string/add_group"
                 android:textColor="@color/button_text_color" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/type_container"
+            android:layout_marginTop="10dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/delete_button_selector"
+            android:text="@string/delete"/>
     </RelativeLayout>
 </merge>

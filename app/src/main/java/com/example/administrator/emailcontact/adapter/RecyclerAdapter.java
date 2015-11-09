@@ -46,7 +46,7 @@ public class RecyclerAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View convertView = inflater.inflate(R.layout.contact_list_item, null);
+        View convertView = inflater.inflate(R.layout.contact_list_item, viewGroup, false);
         return convertView;
     }
 

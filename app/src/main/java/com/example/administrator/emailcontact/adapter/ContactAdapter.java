@@ -5,21 +5,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.emailcontact.R;
+import com.example.administrator.emailcontact.activity.ExpandList;
+import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactItem;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class ContactAdapter extends BaseAdapter {
     private final LinkedList<ContactItem> mItems;
     private final LayoutInflater mInflater;
+    private List<String> mEmails;
 
-    public ContactAdapter(LayoutInflater inflater) {
+    public ContactAdapter(LayoutInflater inflater, List<String> mEmails) {
         mInflater = inflater;
-        mItems = new LinkedList<ContactItem>();
+        mItems = new LinkedList<>();
+        this.mEmails = mEmails;
     }
 
     public void clear() {
@@ -35,8 +42,8 @@ public class ContactAdapter extends BaseAdapter {
         return mItems.size();
     }
 
-    public Object getItem(int i) {
-        return null;
+    public ContactItem getItem(int position) {
+        return mItems.get(position);
     }
 
     public long getItemId(int arg0) {
@@ -57,14 +64,44 @@ public class ContactAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v;
-        ContactItem item = mItems.get(position);
-        if (convertView == null) {
-            v = getItemView(item.type , item, parent);
-        } else {
-            v = getItemView(item.type , item, parent);
+        View view;
+        ContactItem item = getItem(position);
+        switch (item.type) {
+            case PARENT:
+                view = mInflater.inflate(R.layout.expand_parent_item, parent, false);
+                ((TextView) view.findViewById(android.R.id.text1)).setText(item.name);
+                break;
+            case GROUP:
+                view = mInflater.inflate(R.layout.expand_group_item, parent, false);
+                ((TextView) view.findViewById(android.R.id.text1)).setText(item.name);
+                break;
+            case CONTACT:
+                view = mInflater.inflate(R.layout.contact_list_item, parent, false);
+                final Contact contact = (Contact)item.object;
+                final boolean isChecked = mEmails.contains(contact.getEmail());
+                ((TextView) view.findViewById(R.id.text1)).setText(item.name);
+                ((TextView) view.findViewById(R.id.text2)).setText(contact.getEmail());
+                ((ImageView) view.findViewById(R.id.icon)).setImageResource(iconForType(item.type));
+                ((CheckBox) view.findViewById(R.id.checkbox)).setChecked(isChecked);
+                ((CheckBox) view.findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        String email = contact.getEmail();
+                        if (b) {
+                            if (!isChecked)
+                                mEmails.add(email);
+                        } else {
+                            if (isChecked)
+                                mEmails.remove(email);
+                        }
+                    }
+                });
+                break;
+            default:
+                view = mInflater.inflate(R.layout.contact_list_item, parent, false);
+                break;
         }
-        return v;
+        return view;
     }
 
     @Override
@@ -83,30 +120,5 @@ public class ContactAdapter extends BaseAdapter {
                 return ContactItem.Type.CONTACT.ordinal();
         }
         return super.getItemViewType(position);
-    }
-
-    private View getItemView(ContactItem.Type type, ContactItem item, ViewGroup parent) {
-        View view;
-        int position = getItemViewType(type.ordinal());
-        switch (position) {
-            case 0:
-                view = mInflater.inflate(R.layout.expand_parent_item, parent, false);
-                ((TextView) view.findViewById(android.R.id.text1)).setText("返回上一级");
-                break;
-            case 1:
-                view = mInflater.inflate(R.layout.expand_group_item, parent, false);
-                ((TextView) view.findViewById(android.R.id.text1)).setText(item.name);
-                break;
-            case 2:
-                view = mInflater.inflate(R.layout.contact_list_item, parent, false);
-                ((TextView) view.findViewById(R.id.text1)).setText(item.name);
-                ((ImageView) view.findViewById(R.id.icon)).setImageResource(iconForType(item.type));
-                ((ImageView) view.findViewById(R.id.icon)).setColorFilter(Color.argb(255, 0, 0, 0));
-                break;
-            default:
-                view = mInflater.inflate(R.layout.contact_list_item, parent, false);
-                break;
-        }
-        return view;
     }
 }

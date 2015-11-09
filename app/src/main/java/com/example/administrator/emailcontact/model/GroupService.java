@@ -104,12 +104,6 @@ public class GroupService {
         String selection = Groups.PARENT + " = ?";
         String[] selectionArgs = {String.valueOf(parent)};
         Cursor cursor = mContentResolver.query(Groups.CONTENT_URI, columns, selection, selectionArgs, Groups.DEFAULT_SORT_ORDER);
-        if (cursor == null)
-            return null;
-        if (!cursor.moveToNext()) {
-            cursor.close();
-            return null;
-        }
         return cursor;
     }
 

@@ -47,6 +47,7 @@ public class ModifyContact extends Activity {
     private int selectedItemID = 0;
     /* <group._id,position>*/
     private HashMap<Integer, Integer> mPosition2Id = new HashMap<>();
+    private Button mDelete;
 
     public static void Instance(Context context, int id, int from) {
         Intent intent = new Intent(context, ModifyContact.class);
@@ -85,9 +86,31 @@ public class ModifyContact extends Activity {
                 AddGroup.Instance(view.getContext());
             }
         });
+        mDelete = (Button) findViewById(R.id.delete);
+        mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doDelete();
+            }
+        });
         initSpinner();
         initTitleBar();
         initContactInfo();
+    }
+
+    private void doDelete() {
+        int id = Integer.valueOf(mId.getText().toString());
+        ContactService mService = new ContactService(ModifyContact.this);
+        int rows = mService.delete(id);
+        int msgId;
+        if (rows > 0) {
+            msgId = R.string.modify_success;
+            Toast.makeText(ModifyContact.this, msgId, Toast.LENGTH_SHORT).show();
+            activityFinish();
+        } else {
+            msgId = R.string.modify_fail;
+            Toast.makeText(ModifyContact.this, msgId, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initSpinner() {
@@ -150,6 +173,7 @@ public class ModifyContact extends Activity {
             case CONTACT_ADD:
                 mIdLabel.setVisibility(View.INVISIBLE);
                 mId.setVisibility(View.INVISIBLE);
+                mDelete.setVisibility(View.INVISIBLE);
                 mTitle.setText(R.string.add_contact);
                 mBack.setText(R.string.contact);
                 break;

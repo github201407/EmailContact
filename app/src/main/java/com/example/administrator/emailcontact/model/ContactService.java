@@ -33,10 +33,11 @@ public class ContactService {
         return row;
     }
 
-    public void delete(int id) {
+    public int delete(int id) {
         Uri uri = ContentUris.withAppendedId(Contacts.CONTENT_URI, id);
         int rows = mContentResolver.delete(uri, null, null);
         Log.e("sql", "delete:" + rows);
+        return rows;
     }
 
     public int update(int id, String email) {

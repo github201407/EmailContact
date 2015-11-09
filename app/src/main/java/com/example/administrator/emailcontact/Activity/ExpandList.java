@@ -303,10 +303,11 @@ public class ExpandList extends ListActivity {
     private ArrayList<Group> mGroups;
     private ArrayList<Contact> mContacts;
     private Stack<Integer> mStack = new Stack<>();
+    private Stack<String> mStackName = new Stack<>();
 
     private void initAdapterData() {
         // Create a list adapter...
-        adapter = new ContactAdapter(getLayoutInflater());
+        adapter = new ContactAdapter(getLayoutInflater(), mEmails);
         setListAdapter(adapter);
 
         mGService = new GroupService(this);
@@ -336,11 +337,11 @@ public class ExpandList extends ListActivity {
 
                 adapter.clear();
                 if (mStack.size() > 0)
-                    adapter.add(new ContactItem(ContactItem.Type.PARENT, getString(R.string.app_name)));
+                    adapter.add(new ContactItem(ContactItem.Type.PARENT, mStackName.peek(), ""));
                 for (Group group : mGroups)
-                    adapter.add(new ContactItem(ContactItem.Type.GROUP, group.getName()));
+                    adapter.add(new ContactItem(ContactItem.Type.GROUP, group.getName(), group));
                 for (Contact contact : mContacts)
-                    adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName()));
+                    adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName(), contact));
 
                 lastPosition();
             }
@@ -364,6 +365,7 @@ public class ExpandList extends ListActivity {
 
         if (position < (mStack.size() > 0 ? 1 : 0)) {
             mCurrent = mStack.pop();
+            mStackName.pop();
             mHandler.post(mUpdateFiles);
             return;
         }
@@ -372,6 +374,7 @@ public class ExpandList extends ListActivity {
 
         if (position < mGroups.size()) {
             mStack.add(mCurrent);
+            mStackName.add(mGroups.get(position).getName());
             mCurrent = mGroups.get(position).getId();
             mHandler.post(mUpdateFiles);
             return;

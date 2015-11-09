@@ -7,9 +7,11 @@ public class ContactItem {
 
 	final public Type type;
 	final public String name;
+	final public Object object;
 
-	public ContactItem(Type t, String n) {
-		type = t;
-		name = n;
+	public ContactItem(Type t, String n, Object object) {
+		this.type = t;
+		this.name = n;
+		this.object = object;
 	}
 }
