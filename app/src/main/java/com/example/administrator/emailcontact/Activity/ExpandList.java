@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +37,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created by Administrator on 2015/10/8.
@@ -73,24 +73,6 @@ public class ExpandList extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expand_list);
-        /* 查询联系人并获取其Cursor对象*/
-//        Uri mUri=ContactsContract.Contacts.CONTENT_URI;//ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
-//        Cursor cursor=getContentResolver().query(mUri,null,null,null,null);
-//        /* 保存取联系人ID的列位置*/
-//        int mGroupIdColumnIndex = cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID);
-//        /*设置 adapter*/
-//        ExpandListAdapter mAdapter = new ExpandListAdapter(
-//                mGroupIdColumnIndex,
-//                this,
-//                cursor,
-//                android.R.layout.simple_expandable_list_item_1,//组视图(联系人)
-//                new String[]{ContactsContract.Contacts.DISPLAY_NAME}, //显示联系人名字
-//                new int[]{android.R.id.text1},
-//                android.R.layout.simple_expandable_list_item_1,//子视图(电话号码)
-//                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, //显示电话号码
-//                new int[]{android.R.id.text1});
-//        setListAdapter(mAdapter);
-
         mCurrent = -1;
         initActivity();
 
@@ -182,12 +164,6 @@ public class ExpandList extends ListActivity {
             return;
         ContactService mService = new ContactService(this);
         mService.delete(checkedId);
-        reInitExpandlistView();
-    }
-
-    private void doUpdate(Contact contact) {
-        ContactService mService = new ContactService(this);
-        mService.updateContact(contact);
         reInitExpandlistView();
     }
 
@@ -309,12 +285,6 @@ public class ExpandList extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        GroupService mGroup = new GroupService(this);
-//        Cursor mCursor = mGroup.queryParent(-1);
-////        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-//        mAdapter2 = new GroupExpandAdapter(ExpandList.this);
-//        setListAdapter(mAdapter2);
-
         initAdapterData();
     }
 
@@ -329,12 +299,12 @@ public class ExpandList extends ListActivity {
     private GroupService mGService;
     private ContactService mCService;
     static private Map<Integer, Integer> mPositions = new HashMap<>();
-    private int mParent;
     private int mCurrent;
     private ArrayList<Group> mGroups;
     private ArrayList<Contact> mContacts;
+    private Stack<Integer> mStack = new Stack<>();
 
-    private void initAdapterData(){
+    private void initAdapterData() {
         // Create a list adapter...
         adapter = new ContactAdapter(getLayoutInflater());
         setListAdapter(adapter);
@@ -349,11 +319,6 @@ public class ExpandList extends ListActivity {
 //                mChild = 0;
                 mGroups = mGService.queryTopParent(mCurrent);
                 mContacts = mCService.queryContactByGroupId(mCurrent == -1 ? 0 : mCurrent);
-
-                if(mGroups.size() > 0) {
-                    mParent = mGroups.get(0).getParent();
-                } else if (mContacts.size() > 0)
-                    mParent = mContacts.get(0).getType();
 
                 Collections.sort(mGroups, new Comparator<Group>() {
                     @Override
@@ -370,7 +335,7 @@ public class ExpandList extends ListActivity {
                 });
 
                 adapter.clear();
-                if (mParent != -1)
+                if (mStack.size() > 0)
                     adapter.add(new ContactItem(ContactItem.Type.PARENT, getString(R.string.app_name)));
                 for (Group group : mGroups)
                     adapter.add(new ContactItem(ContactItem.Type.GROUP, group.getName()));
@@ -384,13 +349,6 @@ public class ExpandList extends ListActivity {
         // Start initial file scan...
         mHandler.post(mUpdateFiles);
 
-//        // ...and observe the directory and scan files upon changes.
-//        FileObserver observer = new FileObserver(mDirectory.getPath(), FileObserver.CREATE | FileObserver.DELETE) {
-//            public void onEvent(int event, String path) {
-//                mHandler.post(mUpdateFiles);
-//            }
-//        };
-//        observer.startWatching();
     }
 
     private void lastPosition() {
@@ -404,15 +362,16 @@ public class ExpandList extends ListActivity {
         int firstVisiblePosition = getListView().getFirstVisiblePosition();
         mPositions.put(mCurrent, firstVisiblePosition);
 
-        if (position < (mParent == -1 ? 0 : 1)) {
-            mCurrent = mParent;
+        if (position < (mStack.size() > 0 ? 1 : 0)) {
+            mCurrent = mStack.pop();
             mHandler.post(mUpdateFiles);
             return;
         }
 
-        position -= (mParent == -1 ? 0 : 1);
+        position -= (mStack.size() > 0 ? 1 : 0);
 
         if (position < mGroups.size()) {
+            mStack.add(mCurrent);
             mCurrent = mGroups.get(position).getId();
             mHandler.post(mUpdateFiles);
             return;

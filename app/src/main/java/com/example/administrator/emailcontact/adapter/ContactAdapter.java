@@ -58,16 +58,55 @@ public class ContactAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View v;
-        if (convertView == null) {
-            v = mInflater.inflate(R.layout.contact_list_item, null);
-        } else {
-            v = convertView;
-        }
         ContactItem item = mItems.get(position);
-        ((TextView) v.findViewById(R.id.text1)).setText(item.name);
-        ((ImageView) v.findViewById(R.id.icon)).setImageResource(iconForType(item.type));
-        ((ImageView) v.findViewById(R.id.icon)).setColorFilter(Color.argb(255, 0, 0, 0));
+        if (convertView == null) {
+            v = getItemView(item.type , item, parent);
+        } else {
+            v = getItemView(item.type , item, parent);
+        }
         return v;
     }
 
+    @Override
+    public int getViewTypeCount() {
+        return ContactItem.Type.values().length;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        switch (position) {
+            case 0:
+                return ContactItem.Type.PARENT.ordinal();
+            case 1:
+                return ContactItem.Type.GROUP.ordinal();
+            case 2:
+                return ContactItem.Type.CONTACT.ordinal();
+        }
+        return super.getItemViewType(position);
+    }
+
+    private View getItemView(ContactItem.Type type, ContactItem item, ViewGroup parent) {
+        View view;
+        int position = getItemViewType(type.ordinal());
+        switch (position) {
+            case 0:
+                view = mInflater.inflate(R.layout.expand_parent_item, parent, false);
+                ((TextView) view.findViewById(android.R.id.text1)).setText("返回上一级");
+                break;
+            case 1:
+                view = mInflater.inflate(R.layout.expand_group_item, parent, false);
+                ((TextView) view.findViewById(android.R.id.text1)).setText(item.name);
+                break;
+            case 2:
+                view = mInflater.inflate(R.layout.contact_list_item, parent, false);
+                ((TextView) view.findViewById(R.id.text1)).setText(item.name);
+                ((ImageView) view.findViewById(R.id.icon)).setImageResource(iconForType(item.type));
+                ((ImageView) view.findViewById(R.id.icon)).setColorFilter(Color.argb(255, 0, 0, 0));
+                break;
+            default:
+                view = mInflater.inflate(R.layout.contact_list_item, parent, false);
+                break;
+        }
+        return view;
+    }
 }
