@@ -2,37 +2,47 @@ package com.example.administrator.emailcontact.activity;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
-import android.app.ExpandableListActivity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.emailcontact.R;
+import com.example.administrator.emailcontact.adapter.ContactAdapter;
+import com.example.administrator.emailcontact.adapter.GroupExpandAdapter;
 import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
+import com.example.administrator.emailcontact.model.ContactItem;
 import com.example.administrator.emailcontact.model.ContactService;
+import com.example.administrator.emailcontact.model.Group;
 import com.example.administrator.emailcontact.model.GroupService;
+import com.example.administrator.emailcontact.provider.Contacts;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created by Administrator on 2015/10/8.
  */
-public class ExpandList extends ExpandableListActivity {
+public class ExpandList extends ListActivity {
 
     private List<String> mEmails = new ArrayList<String>();
     private Button mOK;
@@ -44,15 +54,17 @@ public class ExpandList extends ExpandableListActivity {
     public static int checkedId = 0;
     private MyCursorTreeAdapter mAdapter;
     private TextView mTitle;
+    private GroupExpandAdapter mAdapter2;
+    private ContactAdapter adapter;
 
-    public static void InstanceList(Context context){
-        Intent intent = new Intent(context,ExpandList.class);
+    public static void InstanceList(Context context) {
+        Intent intent = new Intent(context, ExpandList.class);
         Bundle bundle;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
             context.startActivity(intent, bundle);
-            ((Activity)context).finish();
-        }else {
+            ((Activity) context).finish();
+        } else {
             context.startActivity(intent);
         }
     }
@@ -61,24 +73,7 @@ public class ExpandList extends ExpandableListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.expand_list);
-        /* 查询联系人并获取其Cursor对象*/
-//        Uri mUri=ContactsContract.Contacts.CONTENT_URI;//ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
-//        Cursor cursor=getContentResolver().query(mUri,null,null,null,null);
-//        /* 保存取联系人ID的列位置*/
-//        int mGroupIdColumnIndex = cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID);
-//        /*设置 adapter*/
-//        ExpandListAdapter mAdapter = new ExpandListAdapter(
-//                mGroupIdColumnIndex,
-//                this,
-//                cursor,
-//                android.R.layout.simple_expandable_list_item_1,//组视图(联系人)
-//                new String[]{ContactsContract.Contacts.DISPLAY_NAME}, //显示联系人名字
-//                new int[]{android.R.id.text1},
-//                android.R.layout.simple_expandable_list_item_1,//子视图(电话号码)
-//                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, //显示电话号码
-//                new int[]{android.R.id.text1});
-//        setListAdapter(mAdapter);
-
+        mCurrent = -1;
         initActivity();
 
     }
@@ -104,7 +99,7 @@ public class ExpandList extends ExpandableListActivity {
         mModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doModify();
+//                doModify();
             }
         });
         mOK.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +156,7 @@ public class ExpandList extends ExpandableListActivity {
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
         MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-        setListAdapter(mAdapter);
+//        setListAdapter(mAdapter);
     }
 
     private void doDelete() {
@@ -172,57 +167,6 @@ public class ExpandList extends ExpandableListActivity {
         reInitExpandlistView();
     }
 
-    private void doUpdate(Contact contact) {
-        ContactService mService = new ContactService(this);
-        mService.updateContact(contact);
-        reInitExpandlistView();
-    }
-
-    AlertDialog mAlertDialog = null;
-
-    private void doModify() {
-        if (checkedId == 0)
-            return;
-        ContactService mService = new ContactService(this);
-        Contact contact = mService.find(checkedId);
-        View view = LayoutInflater.from(ExpandList.this).inflate(R.layout.edit_dialog, null);
-        EditText mId = (EditText) view.findViewById(R.id.id);
-        mId.setEnabled(false);
-        final EditText mDisplayName = (EditText) view.findViewById(R.id.displayName);
-        final EditText mEmail = (EditText) view.findViewById(R.id.email);
-        final EditText mNumber = (EditText) view.findViewById(R.id.number);
-        final EditText mType = (EditText) view.findViewById(R.id.type);
-        mId.setText(String.valueOf(checkedId));
-        mDisplayName.setText(contact.getDisplay_name());
-        mEmail.setText(contact.getEmail());
-        mNumber.setText(contact.getNumber());
-        mType.setText("" + contact.getType());
-
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExpandList.this);
-        mBuilder.setView(view);
-        mBuilder.setTitle("Edit:" + checkedId);
-        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String displayName = mDisplayName.getText().toString();
-                String email = mEmail.getText().toString();
-                String number = mNumber.getText().toString();
-                String type = mType.getText().toString();
-                Contact mContact = new Contact(checkedId, number, displayName, email, Integer.parseInt(type));
-                doUpdate(mContact);
-            }
-        });
-        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        mAlertDialog = mBuilder.create();
-        if (!isFinishing())
-            mAlertDialog.show();
-    }
-
     private void doOK() {
         StringBuilder mBuilder = new StringBuilder();
         if (mEmails.size() > 0) {
@@ -230,7 +174,7 @@ public class ExpandList extends ExpandableListActivity {
                 mBuilder.append(email + ",");
             String emails = mBuilder.toString();
             Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
-            setResult(10, getIntent().putExtra("email", emails));
+            setResult(Contacts.CONTACT_PICK, getIntent().putExtra("email", emails));
         }
         finish();
     }
@@ -238,10 +182,9 @@ public class ExpandList extends ExpandableListActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAlertDialog != null && mAlertDialog.isShowing())
-            mAlertDialog.dismiss();
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
+        mPositions.put(mCurrent, getListView().getFirstVisiblePosition());
     }
 
     private ProgressDialog dialog;
@@ -336,13 +279,13 @@ public class ExpandList extends ExpandableListActivity {
         super.onDestroy();
     }
 
+    private Handler mHandler;
+    private Runnable mUpdateFiles;
+
     @Override
     protected void onResume() {
         super.onResume();
-        GroupService mGroup = new GroupService(this);
-        Cursor mCursor = mGroup.queryParent(-1);
-        mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-        setListAdapter(mAdapter);
+        initAdapterData();
     }
 
     @Override
@@ -352,4 +295,95 @@ public class ExpandList extends ExpandableListActivity {
             mAdapter.changeCursor(null);
         mAdapter = null;
     }
+
+    private GroupService mGService;
+    private ContactService mCService;
+    static private Map<Integer, Integer> mPositions = new HashMap<>();
+    private int mCurrent;
+    private ArrayList<Group> mGroups;
+    private ArrayList<Contact> mContacts;
+    private Stack<Integer> mStack = new Stack<>();
+    private Stack<String> mStackName = new Stack<>();
+
+    private void initAdapterData() {
+        // Create a list adapter...
+        adapter = new ContactAdapter(getLayoutInflater(), mEmails);
+        setListAdapter(adapter);
+
+        mGService = new GroupService(this);
+        mCService = new ContactService(this);
+
+        // ...that is updated dynamically when files are scanned
+        mHandler = new Handler();
+        mUpdateFiles = new Runnable() {
+            public void run() {
+//                mChild = 0;
+                mGroups = mGService.queryTopParent(mCurrent);
+                mContacts = mCService.queryContactByGroupId(mCurrent == -1 ? 0 : mCurrent);
+
+                Collections.sort(mGroups, new Comparator<Group>() {
+                    @Override
+                    public int compare(Group lhs, Group rhs) {
+                        return lhs.getName().compareToIgnoreCase(rhs.getName());
+                    }
+                });
+
+                Collections.sort(mContacts, new Comparator<Contact>() {
+                    @Override
+                    public int compare(Contact lhs, Contact rhs) {
+                        return lhs.getName().compareToIgnoreCase(rhs.getName());
+                    }
+                });
+
+                adapter.clear();
+                if (mStack.size() > 0)
+                    adapter.add(new ContactItem(ContactItem.Type.PARENT, mStackName.peek(), ""));
+                for (Group group : mGroups)
+                    adapter.add(new ContactItem(ContactItem.Type.GROUP, group.getName(), group));
+                for (Contact contact : mContacts)
+                    adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName(), contact));
+
+                lastPosition();
+            }
+        };
+
+        // Start initial file scan...
+        mHandler.post(mUpdateFiles);
+
+    }
+
+    private void lastPosition() {
+        if (mPositions.containsKey(mCurrent))
+            getListView().setSelection(mPositions.get(mCurrent));
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        int firstVisiblePosition = getListView().getFirstVisiblePosition();
+        mPositions.put(mCurrent, firstVisiblePosition);
+
+        if (position < (mStack.size() > 0 ? 1 : 0)) {
+            mCurrent = mStack.pop();
+            mStackName.pop();
+            mHandler.post(mUpdateFiles);
+            return;
+        }
+
+        position -= (mStack.size() > 0 ? 1 : 0);
+
+        if (position < mGroups.size()) {
+            mStack.add(mCurrent);
+            mStackName.add(mGroups.get(position).getName());
+            mCurrent = mGroups.get(position).getId();
+            mHandler.post(mUpdateFiles);
+            return;
+        }
+
+        position -= mGroups.size();
+
+        int contactId = mContacts.get(position).getId();
+        ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
+    }
+
 }

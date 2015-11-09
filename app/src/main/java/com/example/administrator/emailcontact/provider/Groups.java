@@ -51,4 +51,7 @@ public class Groups {
             + TYPE + " INTEGER NOT NULL, "
             + NAME + " TEXT, "
             + CREATE_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP);";
+
+    public final static int REQUEST_CREATE_GROUP = 1;
+    public final static String KEY_GROUP_ID_LONG = "group_id";
 }

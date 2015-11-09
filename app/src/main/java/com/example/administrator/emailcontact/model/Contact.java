@@ -2,7 +2,6 @@ package com.example.administrator.emailcontact.model;
 
 import android.content.ContentValues;
 
-import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 
 import java.io.Serializable;
@@ -13,22 +12,26 @@ import java.io.Serializable;
 public class Contact implements Serializable{
     int id;
     String number;
-    String display_name;
+    String name;
     String email;
     int type;
+    String imageUrl;
 
-    public Contact(int id, String number, String display_name, String email, int type) {
+    public Contact(int id, String number, String name, String email, int type, String imageUrl) {
         this.id = id;
         this.number = number;
-        this.display_name = display_name;
+        this.name = name;
         this.email = email;
         this.type = type;
+        this.imageUrl = imageUrl;
     }
-    public Contact(String number, String display_name, String email, int type) {
-        this.number = number;
-        this.display_name = display_name;
-        this.email = email;
-        this.type = type;
+
+    public Contact(int id, String number, String name, String email, int type) {
+        this(id, number, name, email, type, "");
+    }
+
+    public Contact(String number, String name, String email, int type) {
+        this(0, number, name, email, type);
     }
 
     public int getId() {
@@ -47,12 +50,12 @@ public class Contact implements Serializable{
         this.number = number;
     }
 
-    public String getDisplay_name() {
-        return display_name;
+    public String getName() {
+        return name;
     }
 
-    public void setDisplay_name(String display_name) {
-        this.display_name = display_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -71,11 +74,19 @@ public class Contact implements Serializable{
         this.type = type;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public ContentValues getContentValues() {
         ContentValues mContentValues = new ContentValues();
         mContentValues.put(Contacts.NUMBER, number);
         mContentValues.put(Contacts.EMAIL, email);
-        mContentValues.put(Contacts.DISPLAY_NAME, display_name);
+        mContentValues.put(Contacts.DISPLAY_NAME, name);
         mContentValues.put(Contacts.TYPE_ID, type);
         return mContentValues;
     }

@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.administrator.emailcontact.activity.ContactList;
 import com.example.administrator.emailcontact.activity.ExpandList;
@@ -28,7 +27,7 @@ public class MainActivity extends Activity{
     private EditText mDisplayName;
     private EditText mEmail;
     private EditText mNumber;
-    private EditText mType;
+//    private EditText mType;
     private Button mShow;
     private Button mExpand;
     private Button mAdd;
@@ -50,7 +49,7 @@ public class MainActivity extends Activity{
         mDisplayName = (EditText) findViewById(R.id.displayName);
         mEmail = (EditText) findViewById(R.id.email);
         mNumber = (EditText) findViewById(R.id.number);
-        mType = (EditText) findViewById(R.id.type);
+//        mType = (EditText) findViewById(R.id.type);
         mShow = (Button) findViewById(R.id.show);
         mExpand = (Button) findViewById(R.id.expand);
         mAdd = (Button) findViewById(R.id.add);
@@ -246,19 +245,19 @@ public class MainActivity extends Activity{
         Contact mContact = mService.find(id);
         if (mContact == null)
             return;
-        mDisplayName.setText(mContact.getDisplay_name());
+        mDisplayName.setText(mContact.getName());
         mEmail.setText(mContact.getEmail());
         mNumber.setText(mContact.getNumber());
-        mType.setText(mContact.getType());
+//        mType.setText(mContact.getType());
     }
 
     private void doAdd() {
         String displayName = mDisplayName.getText().toString();
         String email = mEmail.getText().toString();
         String number = mNumber.getText().toString();
-        String type = mType.getText().toString();
+//        String type = mType.getText().toString();
         ContactService mService = new ContactService(MainActivity.this);
-        long id = mService.insert(new Contact(number, displayName, email, Integer.parseInt(type)));
+        long id = mService.insert(new Contact(number, displayName, email, Integer.parseInt("3")));
         mId.setText("" + id);
     }
 

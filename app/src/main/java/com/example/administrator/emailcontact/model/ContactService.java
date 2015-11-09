@@ -5,13 +5,14 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.example.administrator.emailcontact.database.ContactSQLiteHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 import com.example.administrator.emailcontact.util.CursorUtil;
+
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2015/9/21.
@@ -32,10 +33,11 @@ public class ContactService {
         return row;
     }
 
-    public void delete(int id) {
+    public int delete(int id) {
         Uri uri = ContentUris.withAppendedId(Contacts.CONTENT_URI, id);
         int rows = mContentResolver.delete(uri, null, null);
         Log.e("sql", "delete:" + rows);
+        return rows;
     }
 
     public int update(int id, String email) {
@@ -91,16 +93,41 @@ public class ContactService {
         String selection = Contacts.TYPE_ID + " = ?";
         String[] selectionArgs = {String.valueOf(typeId)};
         Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
-        if (cursor == null)
+        if (cursor == null) {
             return null;
-        if (!cursor.moveToNext()) {
+        } else if (!cursor.moveToFirst()) {
             cursor.close();
             return null;
         }
         return cursor;
     }
 
-    public Cursor search(String string){
+    public ArrayList<Contact> queryContactByGroupId(int groupId){
+        ArrayList<Contact> mArray = new ArrayList<>();
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER};
+        String selection = Contacts.TYPE_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(groupId)};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return mArray;
+        Contact contact;
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String number = cursor.getString(3);
+            String email = cursor.getString(2);
+            contact = new Contact(id, number, display_Name, email, groupId);
+            mArray.add(contact);
+        }
+        cursor.close();
+        return mArray;
+    }
+
+    public Cursor search(String string) {
         string = "%" + string + "%";
         String[] columns = {
                 Contacts.ID,
@@ -119,4 +146,8 @@ public class ContactService {
         return cursor;
     }
 
+    public int getCursorCount() {
+        Bundle mBundle = mContentResolver.call(Contacts.CONTENT_URI, Contacts.METHOD_GET_ITEM_COUNT, null, null);
+        return mBundle != null ? mBundle.getInt(Contacts.KEY_ITEM_COUNT, 0) : 0;
+    }
 }
