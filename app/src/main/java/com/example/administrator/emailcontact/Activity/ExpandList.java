@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,6 +67,7 @@ public class ExpandList extends ListActivity {
     private TextView mTitle;
     private GroupExpandAdapter mAdapter2;
     private ContactAdapter adapter;
+    private Runnable mSearchFile;
 
     public static void InstanceList(Context context) {
         Intent intent = new Intent(context, ExpandList.class);
@@ -96,12 +99,20 @@ public class ExpandList extends ListActivity {
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ModifyContact.Instance(ExpandList.this, 0, ModifyContact.CONTACT_ADD);
+                String back = mBack.getText().toString().trim();
+                if (back.equals(getString(R.string.add)))
+                    ModifyContact.Instance(ExpandList.this, 0, ModifyContact.CONTACT_ADD);
+                else if (back.equals(getString(R.string.contact))) {
+                    mHandler.post(mUpdateFiles);
+                    mTitle.setText(R.string.contact);
+                    mBack.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    mBack.setText(R.string.add);
+                }
             }
         });
         mOK = (Button) findViewById(R.id.ok);
         mSearchEdt = (EditText) findViewById(R.id.search_edt);
-        mSearchEdt.setFocusable(false);
+//        mSearchEdt.setFocusable(false);
         mSearchBtn = (Button) findViewById(R.id.search_btn);
         mModify = (Button) findViewById(R.id.modify);
         mDelete = (Button) findViewById(R.id.delete);
@@ -123,16 +134,36 @@ public class ExpandList extends ListActivity {
                 doDelete();
             }
         });
+        mSearchEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mHandler.post(mSearchFile);
+            }
+        });
         mSearchEdt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactList.InstanceList(ExpandList.this);
+                mTitle.setText(R.string.search);
+                mBack.setText(R.string.contact);
+                mBack.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.back, 0, 0, 0);
+                mHandler.removeCallbacks(mUpdateFiles);
+                mHandler.post(mSearchFile);
             }
         });
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactList.InstanceList(ExpandList.this);
+                mHandler.post(mSearchFile);
             }
         });
     }
@@ -327,9 +358,19 @@ public class ExpandList extends ListActivity {
 
         // ...that is updated dynamically when files are scanned
         mHandler = new Handler();
+        mSearchFile = new Runnable(){
+            @Override
+            public void run() {
+                String text = mSearchEdt.getText().toString().trim();
+                mContacts = mCService.search2Array(text);
+                adapter.clear();
+                for (Contact contact : mContacts)
+                    adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName(), contact));
+                Log.e(TAG, text);
+            }
+        };
         mUpdateFiles = new Runnable() {
             public void run() {
-//                mChild = 0;
                 mGroups = mGService.queryTopParent(mCurrent);
                 mContacts = mCService.queryContactByGroupId(mCurrent == -1 ? 0 : mCurrent);
 

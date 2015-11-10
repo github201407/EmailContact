@@ -127,6 +127,34 @@ public class ContactService {
         return mArray;
     }
 
+    public ArrayList<Contact> search2Array(String string) {
+        ArrayList<Contact> mArray = new ArrayList<>();
+        string = "%" + string + "%";
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER,
+                Contacts.TYPE_ID};
+        String selection = Contacts.DISPLAY_NAME + " LIKE ? OR " + Contacts.EMAIL + " LIKE ?";
+        String[] selectionArgs = {string, string};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return mArray;
+        Contact contact;
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String email = cursor.getString(2);
+            String number = cursor.getString(3);
+            int type = cursor.getInt(4);
+            contact = new Contact(id, number, display_Name, email, type);
+            mArray.add(contact);
+        }
+        cursor.close();
+        return mArray;
+    }
+
     public Cursor search(String string) {
         string = "%" + string + "%";
         String[] columns = {
