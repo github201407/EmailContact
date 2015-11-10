@@ -178,4 +178,13 @@ public class ContactService {
         Bundle mBundle = mContentResolver.call(Contacts.CONTENT_URI, Contacts.METHOD_GET_ITEM_COUNT, null, null);
         return mBundle != null ? mBundle.getInt(Contacts.KEY_ITEM_COUNT, 0) : 0;
     }
+
+    public boolean isExistByEmailorName(String email, String name){
+        String selection = Contacts.DISPLAY_NAME + " = ? OR " + Contacts.EMAIL + " = ?";
+        String[] selectionArgs = {email, name};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, null, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor != null && cursor.getCount() > 0)
+            return true;
+        return false;
+    }
 }

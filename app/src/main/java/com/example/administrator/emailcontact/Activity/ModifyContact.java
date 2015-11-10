@@ -62,6 +62,20 @@ public class ModifyContact extends Activity {
         }
     }
 
+    public static void Instance(Context context, int id, int from, Bundle extra) {
+        Intent intent = new Intent(context, ModifyContact.class);
+        intent.putExtra("contact_id", id);
+        intent.putExtra("from", from);
+        intent.putExtra("contact", extra);
+        Bundle bundle;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+            context.startActivity(intent, bundle);
+        } else {
+            context.startActivity(intent);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,7 +195,6 @@ public class ModifyContact extends Activity {
                 mTitle.setText(R.string.show_contact);
                 mBack.setText(R.string.email);
                 mOK.setText(R.string.modify);
-                ShowOrEditView(false);
                 break;
         }
     }
@@ -193,8 +206,20 @@ public class ModifyContact extends Activity {
         }
         int strId = getIntent().getIntExtra("from", 0);
         if (strId == K9_SHOW) {
-            Contact mContact = (Contact) getIntent().getSerializableExtra(K9_CONTACT);
-            addDataByContact(mContact);
+            Bundle bundle = getIntent().getBundleExtra("contact");
+            String email = bundle.getString("email");
+            String name = bundle.getString("name");
+            ContactService mService = new ContactService(this);
+            boolean isExist = mService.isExistByEmailorName(email, name);
+            ShowOrEditView(!isExist);
+            if(!isExist){
+                mIdLabel.setVisibility(View.INVISIBLE);
+                mId.setVisibility(View.INVISIBLE);
+                mDelete.setVisibility(View.INVISIBLE);
+                mTitle.setText(R.string.add_contact);
+                mBack.setText(R.string.contact);
+            }
+            addDataByContact(new Contact("", name, email, 0));
         }
     }
 
