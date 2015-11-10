@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.example.administrator.emailcontact.R;
@@ -38,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,6 +67,7 @@ public class ExpandList extends ListActivity {
     private TextView mTitle;
     private GroupExpandAdapter mAdapter2;
     private ContactAdapter adapter;
+    private Runnable mSearchFile;
 
     public static void InstanceList(Context context) {
         Intent intent = new Intent(context, ExpandList.class);
@@ -98,12 +99,20 @@ public class ExpandList extends ListActivity {
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ModifyContact.Instance(ExpandList.this, 0, ModifyContact.CONTACT_ADD);
+                String back = mBack.getText().toString().trim();
+                if (back.equals(getString(R.string.add)))
+                    ModifyContact.Instance(ExpandList.this, 0, ModifyContact.CONTACT_ADD);
+                else if (back.equals(getString(R.string.contact))) {
+                    mHandler.post(mUpdateFiles);
+                    mTitle.setText(R.string.contact);
+                    mBack.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    mBack.setText(R.string.add);
+                }
             }
         });
         mOK = (Button) findViewById(R.id.ok);
         mSearchEdt = (EditText) findViewById(R.id.search_edt);
-        mSearchEdt.setFocusable(false);
+//        mSearchEdt.setFocusable(false);
         mSearchBtn = (Button) findViewById(R.id.search_btn);
         mModify = (Button) findViewById(R.id.modify);
         mDelete = (Button) findViewById(R.id.delete);
@@ -125,16 +134,36 @@ public class ExpandList extends ListActivity {
                 doDelete();
             }
         });
+        mSearchEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mHandler.post(mSearchFile);
+            }
+        });
         mSearchEdt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactList.InstanceList(ExpandList.this);
+                mTitle.setText(R.string.search);
+                mBack.setText(R.string.contact);
+                mBack.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.back, 0, 0, 0);
+                mHandler.removeCallbacks(mUpdateFiles);
+                mHandler.post(mSearchFile);
             }
         });
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContactList.InstanceList(ExpandList.this);
+                mHandler.post(mSearchFile);
             }
         });
     }
@@ -184,7 +213,7 @@ public class ExpandList extends ListActivity {
             for (String email : mEmails)
                 mBuilder.append(email + ",");
             String emails = mBuilder.toString();
-            Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
             setResult(Contacts.CONTACT_PICK, getIntent().putExtra("email", emails));
         }
         finish();
@@ -329,9 +358,19 @@ public class ExpandList extends ListActivity {
 
         // ...that is updated dynamically when files are scanned
         mHandler = new Handler();
+        mSearchFile = new Runnable(){
+            @Override
+            public void run() {
+                String text = mSearchEdt.getText().toString().trim();
+                mContacts = mCService.search2Array(text);
+                adapter.clear();
+                for (Contact contact : mContacts)
+                    adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName(), contact));
+                Log.e(TAG, text);
+            }
+        };
         mUpdateFiles = new Runnable() {
             public void run() {
-//                mChild = 0;
                 mGroups = mGService.queryTopParent(mCurrent);
                 mContacts = mCService.queryContactByGroupId(mCurrent == -1 ? 0 : mCurrent);
 
@@ -400,18 +439,18 @@ public class ExpandList extends ListActivity {
         ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
     }
 
-    public ArrayList<Contact> parseJson(String json){
+    public ArrayList<Contact> parseJson(String json) {
         String json1 = "{'contacts':[{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
                 "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
                 "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}]}";
         JSONContact contacts = JSON.parseObject(json1, JSONContact.class);
         ArrayList<Contact> mArrays = contacts.getContacts();
-        for(Contact contact: mArrays)
+        for (Contact contact : mArrays)
             Log.e(TAG, contact.toString());
         return mArrays;
     }
 
-    public void downloadContact(){
+    public void downloadContact() {
         ContactService mService = new ContactService(this);
         String url = "http://jensvn.duapp.com/jsonServlet?action=download&dataType=json";
         try {
@@ -444,7 +483,7 @@ public class ExpandList extends ListActivity {
             int response = conn.getResponseCode();
             Log.d(TAG, "The response is: " + response);
             String contentAsString = "";
-            if(response == 200){
+            if (response == 200) {
                 is = conn.getInputStream();
                 contentAsString = readIt(is);
             }
@@ -464,17 +503,17 @@ public class ExpandList extends ListActivity {
         Reader reader = new InputStreamReader(stream, "UTF-8");
         StringBuilder mBuilder = new StringBuilder();
         char[] buffer = new char[1024];
-        while (reader.read(buffer) != -1){
+        while (reader.read(buffer) != -1) {
             mBuilder.append(buffer);
         }
         reader.close();
         return mBuilder.toString();
     }
 
-    private String getStack(){
+    private String getStack() {
         Object[] stacks = mStackName.toArray();
         StringBuilder builder = new StringBuilder();
-        for(Object object: stacks)
+        for (Object object : stacks)
             builder.append(object + "/");
         return builder.toString();
     }

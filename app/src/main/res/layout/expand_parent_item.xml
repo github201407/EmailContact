@@ -6,5 +6,5 @@
     android:gravity="center_vertical"
     android:drawablePadding="10dp"
     android:paddingLeft="10dp"
-    android:drawableLeft="@mipmap/array"
+    android:drawableLeft="@mipmap/array_up"
     android:textAppearance="?android:attr/textAppearanceListItem" />

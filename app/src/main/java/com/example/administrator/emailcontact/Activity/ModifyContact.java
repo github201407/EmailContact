@@ -177,6 +177,12 @@ public class ModifyContact extends Activity {
                 mTitle.setText(R.string.add_contact);
                 mBack.setText(R.string.contact);
                 break;
+            case K9_SHOW:
+                mTitle.setText(R.string.show_contact);
+                mBack.setText(R.string.email);
+                mOK.setText(R.string.modify);
+                ShowOrEditView(false);
+                break;
         }
     }
 
