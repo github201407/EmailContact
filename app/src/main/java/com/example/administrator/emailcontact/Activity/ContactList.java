@@ -134,7 +134,7 @@ public class ContactList extends ListActivity implements AdapterView.OnItemClick
     private void doOK() {
         String str = mAdapter.getEmailStr();
         if (!TextUtils.isEmpty(str)) {
-            Toast.makeText(ContactList.this, str, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ContactList.this, str, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();
             intent.putExtra("email", str);
             setResult(Contacts.CONTACT_PICK, intent);

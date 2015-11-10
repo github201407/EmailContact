@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.example.administrator.emailcontact.R;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -184,7 +182,7 @@ public class ExpandList extends ListActivity {
             for (String email : mEmails)
                 mBuilder.append(email + ",");
             String emails = mBuilder.toString();
-            Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
             setResult(Contacts.CONTACT_PICK, getIntent().putExtra("email", emails));
         }
         finish();
@@ -400,18 +398,18 @@ public class ExpandList extends ListActivity {
         ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
     }
 
-    public ArrayList<Contact> parseJson(String json){
+    public ArrayList<Contact> parseJson(String json) {
         String json1 = "{'contacts':[{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
                 "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
                 "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}]}";
         JSONContact contacts = JSON.parseObject(json1, JSONContact.class);
         ArrayList<Contact> mArrays = contacts.getContacts();
-        for(Contact contact: mArrays)
+        for (Contact contact : mArrays)
             Log.e(TAG, contact.toString());
         return mArrays;
     }
 
-    public void downloadContact(){
+    public void downloadContact() {
         ContactService mService = new ContactService(this);
         String url = "http://jensvn.duapp.com/jsonServlet?action=download&dataType=json";
         try {
@@ -444,7 +442,7 @@ public class ExpandList extends ListActivity {
             int response = conn.getResponseCode();
             Log.d(TAG, "The response is: " + response);
             String contentAsString = "";
-            if(response == 200){
+            if (response == 200) {
                 is = conn.getInputStream();
                 contentAsString = readIt(is);
             }
@@ -464,17 +462,17 @@ public class ExpandList extends ListActivity {
         Reader reader = new InputStreamReader(stream, "UTF-8");
         StringBuilder mBuilder = new StringBuilder();
         char[] buffer = new char[1024];
-        while (reader.read(buffer) != -1){
+        while (reader.read(buffer) != -1) {
             mBuilder.append(buffer);
         }
         reader.close();
         return mBuilder.toString();
     }
 
-    private String getStack(){
+    private String getStack() {
         Object[] stacks = mStackName.toArray();
         StringBuilder builder = new StringBuilder();
-        for(Object object: stacks)
+        for (Object object : stacks)
             builder.append(object + "/");
         return builder.toString();
     }
