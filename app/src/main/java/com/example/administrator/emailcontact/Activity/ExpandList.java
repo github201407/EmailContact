@@ -163,7 +163,12 @@ public class ExpandList extends ListActivity {
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHandler.post(mSearchFile);
+                //mHandler.post(mSearchFile);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("email", "123");
+//                bundle.putString("name", "344");
+//                ModifyContact.Instance(ExpandList.this, 0, ModifyContact.K9_SHOW, bundle);
+
             }
         });
     }
@@ -514,7 +519,7 @@ public class ExpandList extends ListActivity {
         Object[] stacks = mStackName.toArray();
         StringBuilder builder = new StringBuilder();
         for (Object object : stacks)
-            builder.append(object + "/");
+            builder.append("/" + object);
         return builder.toString();
     }
 

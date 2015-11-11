@@ -62,6 +62,20 @@ public class ModifyContact extends Activity {
         }
     }
 
+    public static void Instance(Context context, int id, int from, Bundle extra) {
+        Intent intent = new Intent(context, ModifyContact.class);
+        intent.putExtra("contact_id", id);
+        intent.putExtra("from", from);
+        intent.putExtra("contact", extra);
+        Bundle bundle;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+            context.startActivity(intent, bundle);
+        } else {
+            context.startActivity(intent);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,10 +157,12 @@ public class ModifyContact extends Activity {
         mOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (strId == CONTACT_ADD)
+                if (mOK.getText().toString().trim().equals(getString(R.string.add)))
                     doAdd();
-                else
-                    doModify(v);
+                else if (mOK.getText().toString().trim().equals(getString(R.string.modify)))
+                    doModify();
+                else if (mOK.getText().toString().trim().equals(getString(R.string.ok)))
+                    doUpdate();
             }
         });
         switch (strId) {
@@ -180,8 +196,6 @@ public class ModifyContact extends Activity {
             case K9_SHOW:
                 mTitle.setText(R.string.show_contact);
                 mBack.setText(R.string.email);
-                mOK.setText(R.string.modify);
-                ShowOrEditView(false);
                 break;
         }
     }
@@ -193,8 +207,26 @@ public class ModifyContact extends Activity {
         }
         int strId = getIntent().getIntExtra("from", 0);
         if (strId == K9_SHOW) {
-            Contact mContact = (Contact) getIntent().getSerializableExtra(K9_CONTACT);
-            addDataByContact(mContact);
+            Bundle bundle = getIntent().getBundleExtra("contact");
+            String email = bundle.getString("email");
+            String name = bundle.getString("name");
+            ContactService mService = new ContactService(this);
+            Contact contact = mService.isExistByEmailorName(email, name);
+            if(contact == null){
+                ShowOrEditView(true);
+                mIdLabel.setVisibility(View.INVISIBLE);
+                mId.setVisibility(View.INVISIBLE);
+                mDelete.setVisibility(View.INVISIBLE);
+                mTitle.setText(R.string.add_contact);
+                mOK.setText(R.string.add);
+                addDataByContact(new Contact("", name, email, 0));
+            }else{
+                ShowOrEditView(false);
+                mOK.setText(R.string.modify);
+                mTitle.setText(R.string.modify_contact);
+                mDelete.setVisibility(View.VISIBLE);
+                addDataByContact(contact);
+            }
         }
     }
 
@@ -246,14 +278,10 @@ public class ModifyContact extends Activity {
         ModifyContact.this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    private void doModify(View v) {
-        if (((Button) v).getText().toString().equals(getString(R.string.modify))) {
-            ShowOrEditView(true);
-            mTitle.setText(R.string.modify_contact);
-            mOK.setText(R.string.ok);
-            return;
-        }
-        doUpdate();
+    private void doModify() {
+        ShowOrEditView(true);
+        mTitle.setText(R.string.modify_contact);
+        mOK.setText(R.string.ok);
     }
 
     private void doUpdate() {
