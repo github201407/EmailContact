@@ -179,12 +179,28 @@ public class ContactService {
         return mBundle != null ? mBundle.getInt(Contacts.KEY_ITEM_COUNT, 0) : 0;
     }
 
-    public boolean isExistByEmailorName(String email, String name){
+    public Contact isExistByEmailorName(String email, String name){
+        Contact contact = null;
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER,
+                Contacts.TYPE_ID};
         String selection = Contacts.DISPLAY_NAME + " = ? OR " + Contacts.EMAIL + " = ?";
-        String[] selectionArgs = {email, name};
-        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, null, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
-        if(cursor != null && cursor.getCount() > 0)
-            return true;
-        return false;
+        String[] selectionArgs = {name, email};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return null;
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String email1 = cursor.getString(2);
+            String number = cursor.getString(3);
+            int type = cursor.getInt(4);
+            contact = new Contact(id, number, display_Name, email1, type);
+        }
+        cursor.close();
+        return contact;
     }
 }

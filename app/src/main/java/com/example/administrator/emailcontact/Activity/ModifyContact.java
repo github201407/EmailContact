@@ -157,10 +157,12 @@ public class ModifyContact extends Activity {
         mOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (strId == CONTACT_ADD)
+                if (mOK.getText().toString().trim().equals(getString(R.string.add)))
                     doAdd();
-                else
-                    doModify(v);
+                else if (mOK.getText().toString().trim().equals(getString(R.string.modify)))
+                    doModify();
+                else if (mOK.getText().toString().trim().equals(getString(R.string.ok)))
+                    doUpdate();
             }
         });
         switch (strId) {
@@ -194,7 +196,6 @@ public class ModifyContact extends Activity {
             case K9_SHOW:
                 mTitle.setText(R.string.show_contact);
                 mBack.setText(R.string.email);
-                mOK.setText(R.string.modify);
                 break;
         }
     }
@@ -210,16 +211,22 @@ public class ModifyContact extends Activity {
             String email = bundle.getString("email");
             String name = bundle.getString("name");
             ContactService mService = new ContactService(this);
-            boolean isExist = mService.isExistByEmailorName(email, name);
-            ShowOrEditView(!isExist);
-            if(!isExist){
+            Contact contact = mService.isExistByEmailorName(email, name);
+            if(contact == null){
+                ShowOrEditView(true);
                 mIdLabel.setVisibility(View.INVISIBLE);
                 mId.setVisibility(View.INVISIBLE);
                 mDelete.setVisibility(View.INVISIBLE);
                 mTitle.setText(R.string.add_contact);
-                mBack.setText(R.string.contact);
+                mOK.setText(R.string.add);
+                addDataByContact(new Contact("", name, email, 0));
+            }else{
+                ShowOrEditView(false);
+                mOK.setText(R.string.modify);
+                mTitle.setText(R.string.modify_contact);
+                mDelete.setVisibility(View.VISIBLE);
+                addDataByContact(contact);
             }
-            addDataByContact(new Contact("", name, email, 0));
         }
     }
 
@@ -271,14 +278,10 @@ public class ModifyContact extends Activity {
         ModifyContact.this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    private void doModify(View v) {
-        if (((Button) v).getText().toString().equals(getString(R.string.modify))) {
-            ShowOrEditView(true);
-            mTitle.setText(R.string.modify_contact);
-            mOK.setText(R.string.ok);
-            return;
-        }
-        doUpdate();
+    private void doModify() {
+        ShowOrEditView(true);
+        mTitle.setText(R.string.modify_contact);
+        mOK.setText(R.string.ok);
     }
 
     private void doUpdate() {

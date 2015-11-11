@@ -164,10 +164,10 @@ public class ExpandList extends ListActivity {
             @Override
             public void onClick(View v) {
                 //mHandler.post(mSearchFile);
-                Bundle bundle = new Bundle();
-                bundle.putString("email", "123");
-                bundle.putString("name", "344");
-                ModifyContact.Instance(ExpandList.this, 0, ModifyContact.K9_SHOW, bundle);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("email", "123");
+//                bundle.putString("name", "344");
+//                ModifyContact.Instance(ExpandList.this, 0, ModifyContact.K9_SHOW, bundle);
 
             }
         });
