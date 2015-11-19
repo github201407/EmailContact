@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.administrator.emailcontact.provider.Contacts;
+import com.example.administrator.emailcontact.provider.Groups;
 import com.example.administrator.emailcontact.util.CursorUtil;
 
 import java.util.ArrayList;
@@ -202,5 +203,41 @@ public class ContactService {
         }
         cursor.close();
         return contact;
+    }
+
+    public ArrayList<Contact> checkUnAsync(){
+        ArrayList<Contact> mArray = new ArrayList<>();
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER,
+                Contacts.TYPE_ID};
+        String selection = Contacts.ASYNC + " = ?" ;
+        String[] selectionArgs = {String.valueOf(0)};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return mArray;
+        Contact contact;
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String email = cursor.getString(2);
+            String number = cursor.getString(3);
+            int type = cursor.getInt(4);
+            contact = new Contact(id, number, display_Name, email, type);
+            mArray.add(contact);
+        }
+        cursor.close();
+        return mArray;
+    }
+
+    public int updateAsync(){
+        String selection = Contacts.ASYNC + " = ?";
+        String[] selectionArgs = {String.valueOf(0)};
+        ContentValues values = new ContentValues();
+        values.put(Contacts.ASYNC, 1);
+        int rows = mContentResolver.update(Contacts.CONTENT_URI, values, selection, selectionArgs);
+        return rows;
     }
 }

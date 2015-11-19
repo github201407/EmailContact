@@ -14,6 +14,7 @@ public class Contacts {
     public static final String DISPLAY_NAME = "_display_name";
     public static final String EMAIL = "_email";
     public static final String TYPE_ID = "_type_id";
+    public static final String ASYNC = "async";/* 0-未同步，1-已同步 */
 
     /*Default sort order*/
     public static final String DEFAULT_SORT_ORDER = "_id asc";
@@ -44,11 +45,13 @@ public class Contacts {
     public final static int DATABASE_VERSION = 1;
 
     public final static String DB_CREATE_SQL = "CREATE TABLE " + TABLE_NAME + " ("
-            + Contacts.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Contacts.DISPLAY_NAME + " TEXT, "
-            + Contacts.NUMBER + " TEXT, "
-            + Contacts.EMAIL + " TEXT, "
-            + Contacts.TYPE_ID + " INTEGER);";
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DISPLAY_NAME + " TEXT, "
+            + NUMBER + " TEXT, "
+            + EMAIL + " TEXT, "
+            + TYPE_ID + " INTEGER,"
+            + ASYNC + " INTEGER DEFAULT 0 "
+            + ");";
     
     public final static int CONTACT_PICK = 10;
 }

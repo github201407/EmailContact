@@ -108,8 +108,45 @@ public class GroupService {
     }
 
     public int getCursorCount(){
-        Bundle mBundle = mContentResolver.call(Groups.CONTENT_URI,Groups.METHOD_GET_ITEM_COUNT,null,null);
+        Bundle mBundle = mContentResolver.call(Groups.CONTENT_URI, Groups.METHOD_GET_ITEM_COUNT, null, null);
         return mBundle != null ? mBundle.getInt(Groups.KEY_ITEM_COUNT, 0) : 0;
+    }
+
+    public ArrayList<Group> checkUnAsync(){
+        ArrayList<Group> groups = new ArrayList<>();
+        String[] columns = {
+                Groups.ID,
+                Groups.ROOT,
+                Groups.PARENT,
+                Groups.TYPE,
+                Groups.NAME,
+                Groups.CREATE_DATE};
+        String selection = Groups.ASYNC + " = ?";
+        String[] selectionArgs = {String.valueOf(0)};
+        Cursor mCursor = mContentResolver.query(Groups.CONTENT_URI, columns, selection, selectionArgs, Groups.DEFAULT_SORT_ORDER);
+        if (mCursor == null)
+            return groups;
+        Group group;
+        while (mCursor.moveToNext()){
+            int id = mCursor.getInt(0);
+            int root = mCursor.getInt(1);
+            int parent = mCursor.getInt(2);
+            int type = mCursor.getInt(3);
+            String name = mCursor.getString(4);
+            group = new Group(id, parent, type, root, name);
+            groups.add(group);
+        }
+        mCursor.close();
+        return groups;
+    }
+
+    public int updateAsync(){
+        String selection = Groups.ASYNC + " = ?";
+        String[] selectionArgs = {String.valueOf(0)};
+        ContentValues values = new ContentValues();
+        values.put(Groups.ASYNC, 1);
+        int rows = mContentResolver.update(Groups.CONTENT_URI, values, selection, selectionArgs);
+        return rows;
     }
 
 }

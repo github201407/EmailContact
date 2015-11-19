@@ -15,6 +15,7 @@ public class Groups {
     public static final String TYPE = "type";
     public static final String NAME = "_display_name";
     public static final String CREATE_DATE = "_create_date";
+    public static final String ASYNC = "async";/* 0-未同步，1-已同步 */
 
     /*Default sort order*/
     public static final String DEFAULT_SORT_ORDER = "_id asc";
@@ -50,7 +51,9 @@ public class Groups {
             + ROOT + " INTEGER DEFAULT 0, "
             + TYPE + " INTEGER NOT NULL, "
             + NAME + " TEXT, "
-            + CREATE_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP);";
+            + CREATE_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP, "
+            + ASYNC + " INTEGER DEFAULT 0 "
+            + ");";
 
     public final static int REQUEST_CREATE_GROUP = 1;
     public final static String KEY_GROUP_ID_LONG = "group_id";
