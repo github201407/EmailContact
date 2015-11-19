@@ -521,8 +521,12 @@ public class ExpandList extends ListActivity {
         Object[] stacks = mStackName.toArray();
         StringBuilder builder = new StringBuilder();
         for (Object object : stacks)
-            builder.append("/" + object);
+            builder.append("/").append(object);
         return builder.toString();
+    }
+
+    public void uploadContact(){
+
     }
 
 }

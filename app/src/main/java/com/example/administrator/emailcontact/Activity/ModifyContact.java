@@ -23,6 +23,8 @@ import com.example.administrator.emailcontact.provider.Groups;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2015/10/29.
@@ -192,6 +194,7 @@ public class ModifyContact extends Activity {
                 mDelete.setVisibility(View.INVISIBLE);
                 mTitle.setText(R.string.add_contact);
                 mBack.setText(R.string.contact);
+                mOK.setText(R.string.add);
                 break;
             case K9_SHOW:
                 mTitle.setText(R.string.show_contact);
@@ -250,6 +253,14 @@ public class ModifyContact extends Activity {
         String displayName = mDisplayName.getText().toString();
         String email = mEmail.getText().toString();
         String phone = mPhone.getText().toString();
+        if(!isEmail(email)) {
+            Toast.makeText(this, R.string.email_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!isMobile(phone)) {
+            Toast.makeText(this, R.string.phone_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
         int type = mSpinner.getSelectedItemPosition();
         ContactService mService = new ContactService(ModifyContact.this);
         Contact contact = new Contact(phone, displayName, email, type);
@@ -315,4 +326,20 @@ public class ModifyContact extends Activity {
                 }
             }
     }
+
+    private boolean isEmail(String email) {
+        String str = "^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\.][A-Za-z]{2,3}([\\.][A-Za-z]{2})?$";
+        Pattern p = Pattern.compile(str);
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    public static boolean isMobile(String mobiles) {
+        String pattern = "^(13[0-9]|15[0|2|3|5|6|7|8|9]|18[0|2|3|5|6|8|9]|177)\\d{8}$";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(mobiles);
+        return m.matches();
+    }
+
+
 }
