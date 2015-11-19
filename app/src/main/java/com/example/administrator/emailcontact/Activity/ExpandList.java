@@ -147,6 +147,8 @@ public class ExpandList extends ListActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(mSearchFile == null || mHandler == null)
+                    return;
                 mHandler.post(mSearchFile);
             }
         });
