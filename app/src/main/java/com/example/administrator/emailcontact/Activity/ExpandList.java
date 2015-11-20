@@ -25,8 +25,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.example.administrator.emailcontact.R;
 import com.example.administrator.emailcontact.adapter.ContactAdapter;
-import com.example.administrator.emailcontact.adapter.GroupExpandAdapter;
-import com.example.administrator.emailcontact.adapter.MyCursorTreeAdapter;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactItem;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -63,9 +61,7 @@ public class ExpandList extends ListActivity {
     private EditText mSearchEdt;
     private Button mSearchBtn;
     public static int checkedId = 0;
-    private MyCursorTreeAdapter mAdapter;
     private TextView mTitle;
-    private GroupExpandAdapter mAdapter2;
     private ContactAdapter adapter;
     private Runnable mSearchFile;
 
@@ -202,8 +198,6 @@ public class ExpandList extends ListActivity {
     private void reInitExpandlistView() {
         GroupService mGroup = new GroupService(this);
         Cursor mCursor = mGroup.queryParent(-1);
-        MyCursorTreeAdapter mAdapter = new MyCursorTreeAdapter(mCursor, this, mEmails);
-//        setListAdapter(mAdapter);
     }
 
     private void doDelete() {
@@ -336,14 +330,6 @@ public class ExpandList extends ListActivity {
     protected void onResume() {
         super.onResume();
         initAdapterData();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mAdapter != null)
-            mAdapter.changeCursor(null);
-        mAdapter = null;
     }
 
     private GroupService mGService;
