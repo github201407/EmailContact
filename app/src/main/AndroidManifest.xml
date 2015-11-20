@@ -9,39 +9,29 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme.NoActionBar.Animation">
+        android:label="@string/app_name_contact"
+        android:theme="@style/AppTheme.NoActionBar">
 
         <provider
             android:name=".provider.ContactProvider"
             android:authorities="${applicationId}.ContactProvider"
-            android:label="@string/app_name"
+            android:label="@string/app_name_contact"
             android:multiprocess="true" />
         <provider
             android:name=".provider.GroupProvider"
             android:authorities="${applicationId}.GroupProvider"
-            android:label="@string/app_name"
+            android:label="@string/app_name_contact"
             android:multiprocess="true" />
 
         <activity
             android:name=".activity.ExpandList"
             android:label="@string/contact"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
             android:logo="@android:color/transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.ContactList"
-            android:label="@string/contact"
-            android:logo="@android:color/transparent"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity

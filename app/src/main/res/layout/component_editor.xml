@@ -20,6 +20,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_marginRight="@dimen/modify_margin"
             android:text="@string/id"
+            android:textColor="#000"
             android:textSize="@dimen/modify_label_text_size" />
 
         <EditText
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignWithParentIfMissing="true"
             android:layout_toRightOf="@+id/id_label"
+            android:textColor="#555"
             android:background="@drawable/edit_bg" />
 
         <TextView
@@ -40,6 +42,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignWithParentIfMissing="true"
             android:text="@string/displayName"
+            android:textColor="#000"
             android:textSize="@dimen/modify_label_text_size" />
 
         <EditText
@@ -50,6 +53,7 @@
             android:layout_alignStart="@+id/id"
             android:layout_alignWithParentIfMissing="true"
             android:layout_below="@+id/id"
+            android:textColor="#555"
             android:layout_marginTop="@dimen/modify_margin"
             android:background="@drawable/edit_bg"
             android:inputType="text" />
@@ -64,6 +68,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignWithParentIfMissing="true"
             android:text="@string/email"
+            android:textColor="#000"
             android:textSize="@dimen/modify_label_text_size" />
 
         <EditText
@@ -74,6 +79,7 @@
             android:layout_below="@+id/displayName"
             android:layout_marginTop="@dimen/modify_margin"
             android:layout_toEndOf="@+id/id_label"
+            android:textColor="#555"
             android:layout_toRightOf="@+id/id_label"
             android:background="@drawable/edit_bg"
             android:inputType="textEmailAddress" />
@@ -88,6 +94,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignWithParentIfMissing="true"
             android:text="@string/number"
+            android:textColor="#000"
             android:textSize="@dimen/modify_label_text_size" />
 
         <EditText
@@ -113,6 +120,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_below="@+id/type_container"
             android:gravity="center"
+            android:textColor="#000"
             android:text="@string/type"
             android:textSize="@dimen/modify_label_text_size" />
 
@@ -132,6 +140,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="#000"
                 android:gravity="center" />
 
             <Button

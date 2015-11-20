@@ -7,4 +7,5 @@
     android:drawablePadding="10dp"
     android:paddingLeft="10dp"
     android:drawableLeft="@mipmap/array_up"
-    android:textAppearance="?android:attr/textAppearanceListItem" />
+    android:textAppearance="?android:attr/textAppearanceListItem"
+    android:textColor="#000"/>

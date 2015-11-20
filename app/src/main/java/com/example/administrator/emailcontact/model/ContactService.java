@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.administrator.emailcontact.provider.Contacts;
-import com.example.administrator.emailcontact.provider.Groups;
-import com.example.administrator.emailcontact.util.CursorUtil;
 
 import java.util.ArrayList;
 
@@ -60,7 +58,6 @@ public class ContactService {
 
     public Cursor query(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         Cursor mCursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
-        CursorUtil.addCursor(mCursor);
         return mCursor;
     }
 

@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.administrator.emailcontact.activity.ContactList;
 import com.example.administrator.emailcontact.activity.ExpandList;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
@@ -232,9 +231,9 @@ public class MainActivity extends Activity{
 
     private void doShow() {
         // Todo
-        Intent intent = new Intent(MainActivity.this, ContactList.class);
-        //startActivity(intent);
-        startActivityForResult(intent,101);
+//        Intent intent = new Intent(MainActivity.this, ContactList.class);
+//        //startActivity(intent);
+//        startActivityForResult(intent,101);
 
     }
 

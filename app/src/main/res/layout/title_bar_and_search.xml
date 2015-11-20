@@ -65,7 +65,9 @@
             android:drawableLeft="@mipmap/search"
             android:drawablePadding="10dp"
             android:hint="@string/edt_hint"
-            android:singleLine="true" />
+            android:singleLine="true" >
+            <requestFocus />
+        </EditText>
 
         <Button
             android:id="@+id/search_btn"

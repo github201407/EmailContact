@@ -12,7 +12,6 @@ import android.util.Log;
 import com.example.administrator.emailcontact.database.GroupSQLiteHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 import com.example.administrator.emailcontact.provider.Groups;
-import com.example.administrator.emailcontact.util.CursorUtil;
 
 import java.util.ArrayList;
 
@@ -62,7 +61,6 @@ public class GroupService {
 
     public Cursor query(String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
         Cursor mCursor = mContentResolver.query(Groups.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
-        CursorUtil.addCursor(mCursor);
         return mCursor;
     }
 
