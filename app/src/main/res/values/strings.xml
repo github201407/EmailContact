@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EmailContact</string>
+    <string name="app_name_contact">EmailContact</string>
     <string name="action_settings">Settings</string>
     <string name="action_download">DownLoad</string>
 

@@ -182,8 +182,8 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements Expandabl
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-            delete = (Button) view.findViewById(R.id.item_delete);
-            modify = (Button) view.findViewById(R.id.item_modify);
+//            delete = (Button) view.findViewById(R.id.item_delete);
+//            modify = (Button) view.findViewById(R.id.item_modify);
             setImage("");
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -206,19 +206,19 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements Expandabl
 
                 }
             });
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ContactService mService = new ContactService(v.getContext());
-                    mService.delete(id);
-                }
-            });
-            modify.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ModifyContact.Instance(v.getContext(), id, ModifyContact.CONTACT_MODIFY);
-                }
-            });
+//            delete.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ContactService mService = new ContactService(v.getContext());
+//                    mService.delete(id);
+//                }
+//            });
+//            modify.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ModifyContact.Instance(v.getContext(), id, ModifyContact.CONTACT_MODIFY);
+//                }
+//            });
         }
         public int getId() {
             return id;
@@ -248,15 +248,7 @@ public class MyCursorTreeAdapter2 extends CursorTreeAdapter implements Expandabl
         }
 
         public void setImage(String url){
-            Glide.with(mCtx).load(url).asBitmap().centerCrop().placeholder(R.mipmap.head_man).animate(android.R.anim.fade_in).into(new BitmapImageViewTarget(icon) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    RoundedBitmapDrawable circularBitmapDrawable =
-                            RoundedBitmapDrawableFactory.create(mCtx.getResources(), resource);
-                    circularBitmapDrawable.setCornerRadius(50);
-                    icon.setImageDrawable(circularBitmapDrawable);
-                }
-            });
+            Glide.with(mCtx).load(url).asBitmap().centerCrop().placeholder(R.mipmap.head_man).animate(android.R.anim.fade_in).into(icon         );
         }
 
     }

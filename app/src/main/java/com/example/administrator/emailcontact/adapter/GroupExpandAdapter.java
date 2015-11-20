@@ -242,8 +242,8 @@ public class GroupExpandAdapter extends BaseExpandableListAdapter {
             text1 = (TextView) view.findViewById(R.id.text1);
             text2 = (TextView) view.findViewById(R.id.text2);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-            delete = (Button) view.findViewById(R.id.item_delete);
-            modify = (Button) view.findViewById(R.id.item_modify);
+//            delete = (Button) view.findViewById(R.id.item_delete);
+//            modify = (Button) view.findViewById(R.id.item_modify);
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -265,19 +265,19 @@ public class GroupExpandAdapter extends BaseExpandableListAdapter {
 
                 }
             });
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ContactService mService = new ContactService(v.getContext());
-                    mService.delete(id);
-                }
-            });
-            modify.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ModifyContact.Instance(v.getContext(), id, ModifyContact.CONTACT_MODIFY);
-                }
-            });
+//            delete.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ContactService mService = new ContactService(v.getContext());
+//                    mService.delete(id);
+//                }
+//            });
+//            modify.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    ModifyContact.Instance(v.getContext(), id, ModifyContact.CONTACT_MODIFY);
+//                }
+//            });
         }
 
         public void setImage(String url) {
