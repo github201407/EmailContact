@@ -114,24 +114,10 @@ public class ExpandList extends ListActivity {
         mSearchEdt = (EditText) findViewById(R.id.search_edt);
 //        mSearchEdt.setFocusable(false);
         mSearchBtn = (Button) findViewById(R.id.search_btn);
-        mModify = (Button) findViewById(R.id.modify);
-        mDelete = (Button) findViewById(R.id.delete);
-        mModify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                doModify();
-            }
-        });
         mOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doOK();
-            }
-        });
-        mDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doDelete();
             }
         });
         mSearchEdt.addTextChangedListener(new TextWatcher() {

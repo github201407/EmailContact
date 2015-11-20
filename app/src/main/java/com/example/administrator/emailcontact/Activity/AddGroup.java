@@ -102,7 +102,7 @@ public class AddGroup extends Activity {
 //        SimpleCursorAdapter mAdatper = new SimpleCursorAdapter(AddGroup.this,
 //                android.R.layout.simple_spinner_item, mCursor,new String[]{Groups.NAME},new int[]{android.R.id.text1}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         ArrayAdapter<String> mAdatper = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mArrayList);
-        mAdatper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mAdatper.setDropDownViewResource(R.layout.layout_drop_down);
         mSpinnerParent.setAdapter(mAdatper);
     }
 

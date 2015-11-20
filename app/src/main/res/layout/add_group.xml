@@ -24,6 +24,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="@string/group_name"
+            android:textColor="#000"
             android:textSize="16sp" />
 
         <EditText
@@ -35,7 +36,8 @@
             android:layout_toEndOf="@+id/name_label"
             android:layout_toRightOf="@+id/name_label"
             android:background="@drawable/edit_bg"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textColor="#555"/>
 
         <TextView
             android:id="@+id/group_paren_label"
@@ -46,7 +48,8 @@
             android:layout_alignTop="@+id/group_parent"
             android:gravity="center"
             android:text="@string/group_parent"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="#000"/>
 
         <Spinner
             android:id="@+id/group_parent"

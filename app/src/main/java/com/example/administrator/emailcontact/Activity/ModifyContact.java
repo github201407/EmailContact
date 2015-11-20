@@ -143,8 +143,8 @@ public class ModifyContact extends Activity {
             String name = mCursor.getString(mCursor.getColumnIndex(Groups.NAME));
             mArrayList.add(name);
         }
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mArrayList);
-        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(this, R.layout.layout, mArrayList);
+        mAdapter.setDropDownViewResource(R.layout.layout_drop_down);
         mSpinner.setAdapter(mAdapter);
     }
 
