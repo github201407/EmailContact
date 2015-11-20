@@ -26,6 +26,7 @@
         <activity
             android:name=".activity.ExpandList"
             android:label="@string/contact"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
             android:logo="@android:color/transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

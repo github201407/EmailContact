@@ -16,7 +16,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -99,11 +101,13 @@ public class ExpandList extends ListActivity {
                 if (back.equals(getString(R.string.add)))
                     ModifyContact.Instance(ExpandList.this, 0, ModifyContact.CONTACT_ADD);
                 else if (back.equals(getString(R.string.contact))) {
+                    mCurrent = -1;
                     mHandler.post(mUpdateFiles);
                     mTitle.setText(R.string.contact);
                     mBack.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                     mBack.setText(R.string.add);
                 }
+                hideKeyboard();
             }
         });
         mOK = (Button) findViewById(R.id.ok);
@@ -148,14 +152,17 @@ public class ExpandList extends ListActivity {
                 mHandler.post(mSearchFile);
             }
         });
-        mSearchEdt.setOnClickListener(new View.OnClickListener() {
+        mSearchEdt.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                mTitle.setText(R.string.search);
-                mBack.setText(R.string.contact);
-                mBack.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.back, 0, 0, 0);
-                mHandler.removeCallbacks(mUpdateFiles);
-                mHandler.post(mSearchFile);
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mTitle.setText(R.string.search);
+                    mBack.setText(R.string.contact);
+                    mBack.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.back, 0, 0, 0);
+                    mHandler.removeCallbacks(mUpdateFiles);
+                    mHandler.post(mSearchFile);
+                }
+                return false;
             }
         });
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +177,13 @@ public class ExpandList extends ListActivity {
             }
         });
     }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(mSearchEdt.getWindowToken(), 0);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -356,10 +370,15 @@ public class ExpandList extends ListActivity {
             public void run() {
                 String text = mSearchEdt.getText().toString().trim();
                 mContacts = mCService.search2Array(text);
+                mGroups.clear();
+                mStack.clear();
+                mStackName.clear();
                 adapter.clear();
                 for (Contact contact : mContacts)
                     adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName(), contact));
                 Log.e(TAG, text);
+                if(mContacts.size() == 0)
+                    adapter.notifyDataSetChanged();
             }
         };
         mUpdateFiles = new Runnable() {
@@ -393,9 +412,11 @@ public class ExpandList extends ListActivity {
             }
         };
 
-        // Start initial file scan...
-        mHandler.post(mUpdateFiles);
-
+        String title = mTitle.getText().toString().trim();
+        if(title.equals(getString(R.string.contact)))
+            mHandler.post(mUpdateFiles);
+        else if(title.equals(getString(R.string.search)))
+            mHandler.post(mSearchFile);
     }
 
     private void lastPosition() {
@@ -429,7 +450,11 @@ public class ExpandList extends ListActivity {
         position -= mGroups.size();
 
         int contactId = mContacts.get(position).getId();
-        ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
+        String title = mTitle.getText().toString().trim();
+        if(title.equals(getString(R.string.contact)))
+            ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
+        else if(title.equals(getString(R.string.search)))
+            ModifyContact.Instance(this, contactId, ModifyContact.SEARCH_SHOW);
     }
 
     public ArrayList<Contact> parseJson(String json) {
