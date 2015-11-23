@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -257,13 +258,13 @@ public class ModifyContact extends Activity {
             Toast.makeText(this, R.string.email_error, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!isMobile(phone)) {
-            Toast.makeText(this, R.string.phone_error, Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (!isMobile(phone)) {
+//            Toast.makeText(this, R.string.phone_error, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         int type = mSpinner.getSelectedItemPosition();
         ContactService mService = new ContactService(ModifyContact.this);
-        Contact contact = new Contact(phone, displayName, email, type);
+        Contact contact = new Contact(TextUtils.isEmpty(phone)? "" : phone, displayName, email, type);
         long rows = mService.insert(contact);
         int msgId;
         if (rows > 0) {
@@ -328,7 +329,7 @@ public class ModifyContact extends Activity {
     }
 
     private boolean isEmail(String email) {
-        String str = "^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\.][A-Za-z]{2,3}([\\.][A-Za-z]{2})?$";
+        String str = "^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\.][A-Za-z]+([\\.][A-Za-z]{2,3})?$";
         Pattern p = Pattern.compile(str);
         Matcher m = p.matcher(email);
         return m.matches();
