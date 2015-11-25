@@ -6,7 +6,6 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +49,7 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
+ * 联系人主页面
  * Created by Administrator on 2015/10/8.
  */
 public class ExpandList extends ListActivity {
@@ -133,7 +133,7 @@ public class ExpandList extends ListActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(mSearchFile == null || mHandler == null)
+                if (mSearchFile == null || mHandler == null)
                     return;
                 mHandler.post(mSearchFile);
             }
@@ -141,7 +141,7 @@ public class ExpandList extends ListActivity {
         mSearchEdt.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     mTitle.setText(R.string.search);
                     mBack.setText(R.string.contact);
                     mBack.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.back, 0, 0, 0);
@@ -165,7 +165,7 @@ public class ExpandList extends ListActivity {
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.hideSoftInputFromWindow(mSearchEdt.getWindowToken(), 0);
     }
@@ -195,19 +195,7 @@ public class ExpandList extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void reInitExpandlistView() {
-        GroupService mGroup = new GroupService(this);
-        Cursor mCursor = mGroup.queryParent(-1);
-    }
-
-    private void doDelete() {
-        if (checkedId == 0)
-            return;
-        ContactService mService = new ContactService(this);
-        mService.delete(checkedId);
-        reInitExpandlistView();
-    }
-
+    /*确定按钮：回调选中的联系人 */
     private void doOK() {
         StringBuilder mBuilder = new StringBuilder();
         if (mEmails.size() > 0) {
@@ -230,6 +218,7 @@ public class ExpandList extends ListActivity {
 
     private ProgressDialog dialog;
 
+    /*进度条*/
     private void showProgress() {
         dialog = new ProgressDialog(this);
         dialog.setTitle("DownLoading...");
@@ -341,6 +330,7 @@ public class ExpandList extends ListActivity {
     private Stack<Integer> mStack = new Stack<>();
     private Stack<String> mStackName = new Stack<>();
 
+    /* 初始化数据 */
     private void initAdapterData() {
         // Create a list adapter...
         adapter = new ContactAdapter(getLayoutInflater(), mEmails);
@@ -351,9 +341,9 @@ public class ExpandList extends ListActivity {
 
         // ...that is updated dynamically when files are scanned
         mHandler = new Handler();
-        mSearchFile = new Runnable(){
+        mSearchFile = new Runnable() {
             @Override
-            public void run() {
+            public void run() {/*搜索联系人*/
                 String text = mSearchEdt.getText().toString().trim();
                 mContacts = mCService.search2Array(text);
                 mGroups.clear();
@@ -363,12 +353,12 @@ public class ExpandList extends ListActivity {
                 for (Contact contact : mContacts)
                     adapter.add(new ContactItem(ContactItem.Type.CONTACT, contact.getName(), contact));
                 Log.e(TAG, text);
-                if(mContacts.size() == 0)
+                if (mContacts.size() == 0)
                     adapter.notifyDataSetChanged();
             }
         };
         mUpdateFiles = new Runnable() {
-            public void run() {
+            public void run() {/*显示联系人*/
                 mGroups = mGService.queryTopParent(mCurrent);
                 mContacts = mCService.queryContactByGroupId(mCurrent == -1 ? 0 : mCurrent);
 
@@ -399,9 +389,9 @@ public class ExpandList extends ListActivity {
         };
 
         String title = mTitle.getText().toString().trim();
-        if(title.equals(getString(R.string.contact)))
+        if (title.equals(getString(R.string.contact)))
             mHandler.post(mUpdateFiles);
-        else if(title.equals(getString(R.string.search)))
+        else if (title.equals(getString(R.string.search)))
             mHandler.post(mSearchFile);
     }
 
@@ -437,12 +427,13 @@ public class ExpandList extends ListActivity {
 
         int contactId = mContacts.get(position).getId();
         String title = mTitle.getText().toString().trim();
-        if(title.equals(getString(R.string.contact)))
+        if (title.equals(getString(R.string.contact)))
             ModifyContact.Instance(this, contactId, ModifyContact.CONTACT_SHOW);
-        else if(title.equals(getString(R.string.search)))
+        else if (title.equals(getString(R.string.search)))
             ModifyContact.Instance(this, contactId, ModifyContact.SEARCH_SHOW);
     }
 
+    /* 模拟网络数据 */
     public ArrayList<Contact> parseJson(String json) {
         String json1 = "{'contacts':[{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
                 "{'number':'123','name':'xiaoxiao','email':'123@qq.com','type':0}," +
@@ -454,6 +445,7 @@ public class ExpandList extends ListActivity {
         return mArrays;
     }
 
+    /* 将下载的联系人，添加到数据库 */
     public void downloadContact() {
         ContactService mService = new ContactService(this);
         String url = "http://jensvn.duapp.com/jsonServlet?action=download&dataType=json";
@@ -469,6 +461,7 @@ public class ExpandList extends ListActivity {
 
     }
 
+    /* 根据url下载联系人 */
     public String downloadUrl(String myurl) throws IOException {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
@@ -522,7 +515,7 @@ public class ExpandList extends ListActivity {
         return builder.toString();
     }
 
-    public void uploadContact(){
+    public void uploadContact() {
 
     }
 

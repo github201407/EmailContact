@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 联系人详情页面
  * Created by Administrator on 2015/10/29.
  */
 public class ModifyContact extends Activity {
@@ -52,6 +53,7 @@ public class ModifyContact extends Activity {
     private HashMap<Integer, Integer> mPosition2Id = new HashMap<>();
     private Button mDelete;
 
+    /* 自身跳转 */
     public static void Instance(Context context, int id, int from) {
         Intent intent = new Intent(context, ModifyContact.class);
         intent.putExtra("contact_id", id);
@@ -65,6 +67,7 @@ public class ModifyContact extends Activity {
         }
     }
 
+    /* k9跳转过来 */
     public static void Instance(Context context, int id, int from, Bundle extra) {
         Intent intent = new Intent(context, ModifyContact.class);
         intent.putExtra("contact_id", id);
@@ -115,6 +118,7 @@ public class ModifyContact extends Activity {
         initContactInfo();
     }
 
+    /* 删除联系人 */
     private void doDelete() {
         int id = Integer.valueOf(mId.getText().toString());
         ContactService mService = new ContactService(ModifyContact.this);
@@ -149,6 +153,7 @@ public class ModifyContact extends Activity {
         mSpinner.setAdapter(mAdapter);
     }
 
+    /* 根据来源，显示不同标题栏 */
     private void initTitleBar() {
         final int strId = getIntent().getIntExtra("from", 0);
         mBack.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +164,7 @@ public class ModifyContact extends Activity {
         });
         mOK.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {/*根据按钮值的不同，执行不同的方法*/
                 if (mOK.getText().toString().trim().equals(getString(R.string.add)))
                     doAdd();
                 else if (mOK.getText().toString().trim().equals(getString(R.string.modify)))
@@ -204,11 +209,13 @@ public class ModifyContact extends Activity {
         }
     }
 
+    /*初始化页面数据*/
     private void initContactInfo() {
         int id = getIntent().getIntExtra("contact_id", -1);
         if (id > 0) {
             initData(id);
         }
+        /* 来自k9特殊处理显示 */
         int strId = getIntent().getIntExtra("from", 0);
         if (strId == K9_SHOW) {
             Bundle bundle = getIntent().getBundleExtra("contact");
@@ -249,6 +256,7 @@ public class ModifyContact extends Activity {
         mSpinner.setSelection(mPosition2Id.containsKey(mContact.getType()) ? mPosition2Id.get(mContact.getType()) : 0);
     }
 
+    /* 添加联系人 */
     private void doAdd() {
         //int id = Integer.valueOf(mId.getText().toString());
         String displayName = mDisplayName.getText().toString();
@@ -296,6 +304,7 @@ public class ModifyContact extends Activity {
         mOK.setText(R.string.ok);
     }
 
+    /* 更新联系人 */
     private void doUpdate() {
         int id = Integer.valueOf(mId.getText().toString());
         String displayName = mDisplayName.getText().toString();

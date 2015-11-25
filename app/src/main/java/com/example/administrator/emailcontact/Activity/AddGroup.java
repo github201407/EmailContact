@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ * 添加分组页面
  * Created by Administrator on 2015/11/1.
  */
 public class AddGroup extends Activity {
@@ -39,7 +40,7 @@ public class AddGroup extends Activity {
     public static void Instance(Context context) {
         Intent intent = new Intent(context, AddGroup.class);
         Bundle bundle;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {/* 跳转渐变效果 */
             bundle = ActivityOptions.makeCustomAnimation(context.getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
 //            context.startActivity(intent, bundle);
             ((Activity) context).startActivityForResult(intent, Groups.REQUEST_CREATE_GROUP, bundle);
@@ -101,7 +102,7 @@ public class AddGroup extends Activity {
         }
 //        SimpleCursorAdapter mAdatper = new SimpleCursorAdapter(AddGroup.this,
 //                android.R.layout.simple_spinner_item, mCursor,new String[]{Groups.NAME},new int[]{android.R.id.text1}, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        ArrayAdapter<String> mAdatper = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mArrayList);
+        ArrayAdapter<String> mAdatper = new ArrayAdapter<String>(this, R.layout.layout, mArrayList);
         mAdatper.setDropDownViewResource(R.layout.layout_drop_down);
         mSpinnerParent.setAdapter(mAdatper);
     }
