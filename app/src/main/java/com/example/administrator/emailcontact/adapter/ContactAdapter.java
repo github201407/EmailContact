@@ -1,6 +1,5 @@
 package com.example.administrator.emailcontact.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.emailcontact.R;
-import com.example.administrator.emailcontact.activity.ExpandList;
 import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactItem;
 
 import java.util.LinkedList;
 import java.util.List;
-
+/**
+ * 联系人适配器
+ * */
 public class ContactAdapter extends BaseAdapter {
     private final LinkedList<ContactItem> mItems;
     private final LayoutInflater mInflater;

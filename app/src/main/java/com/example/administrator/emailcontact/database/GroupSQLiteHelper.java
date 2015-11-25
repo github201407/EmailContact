@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.administrator.emailcontact.provider.Groups;
 
 /**
+ * 分组表数据库帮助类
  * Created by Administrator on 2015/10/8.
  */
 public class GroupSQLiteHelper extends SQLiteOpenHelper {

@@ -16,6 +16,7 @@ import com.example.administrator.emailcontact.provider.Groups;
 import java.util.ArrayList;
 
 /**
+ * 分组表相关操作
  * Created by Administrator on 2015/10/8.
  */
 public class GroupService {

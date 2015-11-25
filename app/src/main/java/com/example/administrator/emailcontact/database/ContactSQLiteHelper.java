@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.administrator.emailcontact.provider.Contacts;
 
 /**
+ * 联系人表数据库帮助类
  * Created by Administrator on 2015/9/18.
  */
 public class ContactSQLiteHelper extends SQLiteOpenHelper {

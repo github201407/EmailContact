@@ -14,6 +14,7 @@ import com.example.administrator.emailcontact.provider.Contacts;
 import java.util.ArrayList;
 
 /**
+ * 联系人数据库相关操作
  * Created by Administrator on 2015/9/21.
  */
 public class ContactService {
