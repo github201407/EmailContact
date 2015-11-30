@@ -1,4 +1,4 @@
-package com.example.administrator.emailcontact.activity;
+package com.example.administrator.emailcontact.Activity;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
