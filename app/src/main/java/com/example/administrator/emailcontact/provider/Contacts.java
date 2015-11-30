@@ -15,6 +15,9 @@ public class Contacts {
     public static final String EMAIL = "_email";
     public static final String TYPE_ID = "_type_id";
     public static final String ASYNC = "async";/* 0-未同步，1-已同步 */
+    public static final String START = "start";/* 0-未收藏，1-收藏 */
+    public static final String RECENT = "recent";/* 是否最近记录 0-不显示，1-显示*/
+    public static final String RECENT_DATE_TIME = "recent_time";/*最近记录的时间*/
 
     /*Default sort order*/
     public static final String DEFAULT_SORT_ORDER = "_id asc";
@@ -50,7 +53,10 @@ public class Contacts {
             + NUMBER + " TEXT, "
             + EMAIL + " TEXT, "
             + TYPE_ID + " INTEGER,"
-            + ASYNC + " INTEGER DEFAULT 0 "
+            + ASYNC + " INTEGER DEFAULT 0 ,"
+            + START + " INTEGER DEFAULT 0 ,"
+            + RECENT + " INTEGER DEFAULT 0 ,"
+            + RECENT_DATE_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP"
             + ");";
     
     public final static int CONTACT_PICK = 10;

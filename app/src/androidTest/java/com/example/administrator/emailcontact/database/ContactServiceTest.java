@@ -8,6 +8,8 @@ import com.example.administrator.emailcontact.model.Contact;
 import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.provider.Contacts;
 
+import java.util.ArrayList;
+
 /**
  * Created by Administrator on 2015/9/21.
  */
@@ -19,8 +21,11 @@ public class ContactServiceTest extends AndroidTestCase {
     public void testinsert() {
         ContactService mService = new ContactService(getContext());
         Contact mContact = new Contact("123", "cmq", "123@qq.com", 1);
-        long rowid = mService.insert(mContact);
-        assertEquals(-1l, rowid);
+        mService.insert(mContact);
+        mService.insert(mContact);
+        mService.insert(mContact);
+        mService.insert(mContact);
+        mService.insert(mContact);
     }
 
     public void testFind() {
@@ -54,5 +59,27 @@ public class ContactServiceTest extends AndroidTestCase {
         ContactService mService = new ContactService(getContext());
         int result = mService.update(1, "123@163.com");
         assertEquals(1, result);
+    }
+
+    public void testQueryStar(){
+        ContactService mService = new ContactService(getContext());
+        ArrayList<Contact> mStars = mService.queryStarContact();
+        Log.e("sql", "" + mStars.size());
+    }
+
+    public void testSetStar(){
+        ContactService mService = new ContactService(getContext());
+        mService.setStarContact(1);
+    }
+
+    public void testQueryRecent(){
+        ContactService mService = new ContactService(getContext());
+        ArrayList<Contact> mStars = mService.queryRecentContact();
+        Log.e("sql_recent", "" + mStars.size());
+    }
+
+    public void testSetRecent(){
+        ContactService mService = new ContactService(getContext());
+        mService.setRecentContact(2);
     }
 }

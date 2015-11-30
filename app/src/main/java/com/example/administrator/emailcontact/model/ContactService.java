@@ -11,7 +11,9 @@ import android.util.Log;
 
 import com.example.administrator.emailcontact.provider.Contacts;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * 联系人数据库相关操作
@@ -238,4 +240,79 @@ public class ContactService {
         int rows = mContentResolver.update(Contacts.CONTENT_URI, values, selection, selectionArgs);
         return rows;
     }
+
+    public ArrayList<Contact> queryStarContact(){
+        ArrayList<Contact> mStars = new ArrayList<>();
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER,
+                Contacts.TYPE_ID};
+        String selection = Contacts.START + " = ?" ;
+        String[] selectionArgs = {String.valueOf(1)};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return mStars;
+        Contact contact;
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String email = cursor.getString(2);
+            String number = cursor.getString(3);
+            int type = cursor.getInt(4);
+            contact = new Contact(id, number, display_Name, email, type);
+            mStars.add(contact);
+        }
+        cursor.close();
+        return mStars;
+    }
+
+    public int setStarContact(int id) {
+        String selection = Contacts.ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        ContentValues values = new ContentValues();
+        values.put(Contacts.START, 1);
+        int rows = mContentResolver.update(Contacts.CONTENT_URI, values, selection, selectionArgs);
+        return rows;
+    }
+
+    public ArrayList<Contact> queryRecentContact(){
+        ArrayList<Contact> mRecent = new ArrayList<>();
+        String[] columns = {
+                Contacts.ID,
+                Contacts.DISPLAY_NAME,
+                Contacts.EMAIL,
+                Contacts.NUMBER,
+                Contacts.TYPE_ID};
+        String selection = Contacts.RECENT + " = ?" ;
+        String[] selectionArgs = {String.valueOf(1)};
+        Cursor cursor = mContentResolver.query(Contacts.CONTENT_URI, columns, selection, selectionArgs, Contacts.DEFAULT_SORT_ORDER);
+        if(cursor == null)
+            return mRecent;
+        Contact contact;
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String display_Name = cursor.getString(1);
+            String email = cursor.getString(2);
+            String number = cursor.getString(3);
+            int type = cursor.getInt(4);
+            contact = new Contact(id, number, display_Name, email, type);
+            mRecent.add(contact);
+        }
+        cursor.close();
+        return mRecent;
+    }
+
+    public int setRecentContact(int id){
+        String selection = Contacts.ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        ContentValues values = new ContentValues();
+        values.put(Contacts.RECENT, 1);
+        String time =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+        values.put(Contacts.RECENT_DATE_TIME, time);
+        int rows = mContentResolver.update(Contacts.CONTENT_URI, values, selection, selectionArgs);
+        return rows;
+    }
+
 }
