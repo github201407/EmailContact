@@ -4,13 +4,11 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <include layout="@layout/table_title"/>
+    <include layout="@layout/title_search"/>
 
-    <View
+    <ListView
+        android:id="@+id/listview_contact"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#bbb" />
-
-    <include layout="@layout/fragment_contact"/>
+        android:layout_height="match_parent"></ListView>
 
 </LinearLayout>
