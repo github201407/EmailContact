@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="48dp"
+              xmlns:tools="http://schemas.android.com/tools"
+              tools:showIn="@layout/contacts_local"
+                android:gravity="center">
+
+    <Button
+        android:id="@+id/table_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        android:drawableRight="@drawable/slide"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"
+        android:text="@string/table_phone"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+
+    <Button
+        android:id="@+id/table_ground"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        android:drawableRight="@drawable/slide"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"
+        android:text="@string/table_ground"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/table_collect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        android:drawableRight="@drawable/slide"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"
+        android:text="@string/table_collect"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/table_contact"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:onClick="onClick"
+        android:layout_weight="1"
+        android:layout_margin="5dp"
+        android:text="@string/table_contact"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+
+</LinearLayout>
