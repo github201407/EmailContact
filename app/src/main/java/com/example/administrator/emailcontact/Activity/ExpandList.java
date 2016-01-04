@@ -32,7 +32,6 @@ import com.example.administrator.emailcontact.model.ContactService;
 import com.example.administrator.emailcontact.model.Group;
 import com.example.administrator.emailcontact.model.GroupService;
 import com.example.administrator.emailcontact.model.JSONContact;
-import com.example.administrator.emailcontact.provider.Contacts;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -203,7 +202,8 @@ public class ExpandList extends ListActivity {
                 mBuilder.append(email + ",");
             String emails = mBuilder.toString();
             //Toast.makeText(ExpandList.this, emails, Toast.LENGTH_SHORT).show();
-            setResult(Contacts.CONTACT_PICK, getIntent().putExtra("email", emails));
+//            setResult(Contacts.CONTACT_PICK, getIntent().putExtra("email", emails));
+            setResult(RESULT_OK, getIntent().putExtra("email", emails));
         }
         finish();
     }
