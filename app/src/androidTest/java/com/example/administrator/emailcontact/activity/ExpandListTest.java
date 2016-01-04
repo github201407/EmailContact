@@ -1,11 +1,11 @@
 package com.example.administrator.emailcontact.activity;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.AndroidTestCase;
 import android.util.Log;
 
-import junit.framework.TestCase;
-
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,4 +34,17 @@ public class ExpandListTest extends ActivityInstrumentationTestCase2<ExpandList>
     public void testparseJson() throws Exception {
         getActivity().parseJson("");
     }
+
+    public void testURLEncodeWithDecode(){
+        String cn = "中文";
+        try {
+            String encode = URLEncoder.encode(cn, "utf-8");
+            String decode = URLDecoder.decode(encode, "utf-8");
+            assertEquals(cn, decode);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
